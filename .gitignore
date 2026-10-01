@@ -1,0 +1,37 @@
+# ===== Segredos (NUNCA commitar) =====
+.env
+*.env.local
+!.env.example
+
+# ===== Java / Maven (backend) =====
+backend/target/
+*.class
+*.log
+hs_err_pid*
+!backend/.mvn/wrapper/maven-wrapper.jar
+
+# ===== Node / Angular / Ionic (frontend) =====
+node_modules/
+frontend/www/
+frontend/dist/
+frontend/.angular/
+frontend/coverage/
+npm-debug.log*
+
+# ===== Uploads locais (fotos de produtos em dev) =====
+backend/uploads/
+
+# ===== IDEs =====
+.idea/
+*.iml
+.vscode/*
+!.vscode/extensions.json
+.settings/
+.project
+.classpath
+.factorypath
+
+# ===== SO =====
+.DS_Store
+Thumbs.db
+desktop.ini
