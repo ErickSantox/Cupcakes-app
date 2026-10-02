@@ -1,4 +1,4 @@
-package br.com.ericksantos.cupcakes;
+package br.com.ericksantos.cupcakes.controller;
 
 
 import org.junit.jupiter.api.Test;
