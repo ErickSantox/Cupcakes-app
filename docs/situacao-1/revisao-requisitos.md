@@ -13,17 +13,17 @@ ambiguidades, conflitos e itens inviáveis no escopo acadêmico.
 ## 2. Conflitos entre histórias
 | US            | Conflito | Decisão                                                                                                   |
 |---------------|----------|-----------------------------------------------------------------------------------------------------------|
-| US-06 x US-08 | Carrinho persiste "sem login", mas finalizar exige conta | Carrinho salvo no app (24h); login exigido só no checkout                                                 |
-| US-           | Recuperar senha do usuario, mas não vamos enviar e-mail | Confirmamos informações do usuario (Nome,sobrenome, e-mail e cep) se os dados baterem, pode mudar a senha |
+| US-06 x US-08 | Carrinho persiste "sem login", mas finalizar exige conta | Carrinho salvo no app (24h); login exigido só no checkout
 
 ## 3. Adequações de escopo (simulações)
-| US | Requisito original | Implementação no PIT II | Motivo |
-|----|-------------------|------------------------|--------|
-| US-09 | Integração com gateway | Gateway simulado (Luhn + bandeira) | Gateway real exige contrato comercial |
-| US-10 | API do Banco Central | QR Code gerado localmente + botão "simular pagamento" | API PIX exige certificado de instituição financeira |
-| US-11 | API dos Correios | ViaCEP (API pública) | API dos Correios exige contrato |
-| US-13 | Notificação push | Atualização automática (polling) + aviso na tela | Push exige Firebase/publicação em loja |
-| US-01/08 | Envio de e-mail | Registro em log | Sem servidor SMTP no escopo |
+| US | Requisito original                     | Implementação no PIT II | Motivo |
+|----|----------------------------------------|------------------------|--------|
+| US-09 | Integração com gateway                 | Gateway simulado (Luhn + bandeira) | Gateway real exige contrato comercial |
+| US-10 | API do Banco Central                   | QR Code gerado localmente + botão "simular pagamento" | API PIX exige certificado de instituição financeira |
+| US-11 | API dos Correios                       | ViaCEP (API pública) | API dos Correios exige contrato |
+| US-13 | Notificação push                       | Atualização automática (polling) + aviso na tela | Push exige Firebase/publicação em loja |
+| US-01/08 | Envio de e-mail                        | Registro em log | Sem servidor SMTP no escopo |
+ | US-02(CA#3) | Recuperação de senha (Link por e-mail) |Token de redefinição (15 min, uso único) com o link registrado em log | sem servidor SMTP no escopo; o fluxo de segurança é mantido|   
 
 ## 4. Lacunas identificadas
 - US-14 cobre só o cadastro: incluídas edição e desativação de produto (desativar em vez de excluir, para preservar o histórico de pedidos).
