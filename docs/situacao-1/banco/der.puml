@@ -7,7 +7,7 @@ entity usuario {
   --
   * nome : VARCHAR(100)
   * sobrenome : VARCHAR(100)
-  * telefone : CHAR(11)
+  * telefone : VARCHAR(11)
   * email : VARCHAR(150) <<UNIQUE>>
   * senha_hash : VARCHAR(100)
   * perfil : VARCHAR(20)
@@ -23,7 +23,7 @@ entity endereco {
   * usuario_id : BIGINT <<FK>>
   * logradouro : VARCHAR(100)
   * numero : VARCHAR(10)
-  * cep : CHAR(9)
+  * cep : CHAR(8)
    complemento : VARCHAR(50)
   * bairro : VARCHAR(50)
   * cidade : VARCHAR(50)
@@ -66,7 +66,7 @@ entity pedido {
   * status : VARCHAR(50)
   * entrega_logradouro : VARCHAR(100)
   * entrega_numero : VARCHAR(10)
-  * entrega_cep : CHAR(9)
+  * entrega_cep : CHAR(8)
    entrega_complemento : VARCHAR(50)
   * entrega_bairro : VARCHAR(50)
   * entrega_cidade : VARCHAR(50)
