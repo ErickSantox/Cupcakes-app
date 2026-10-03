@@ -93,7 +93,7 @@ entity pagamento {
   * status : VARCHAR(50)
   * valor : DECIMAL(10,2)
    bandeira : VARCHAR(50)
-   ultimos_digitos : CHAR(5)
+   ultimos_digitos : CHAR(4)
    pix_copia_cola : VARCHAR(512)
    pix_expira_em : TIMESTAMP
   * criado_em : TIMESTAMP
