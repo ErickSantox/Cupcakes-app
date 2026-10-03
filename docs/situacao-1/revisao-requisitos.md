@@ -11,9 +11,10 @@ ambiguidades, conflitos e itens inviáveis no escopo acadêmico.
 | US-13 x US-15 | US-13 lista 3 status; o fluxo real precisa de pagamento e cancelamento | Status unificados: AGUARDANDO_PAGAMENTO → PAGO → EM_PREPARO → SAIU_PARA_ENTREGA → ENTREGUE (+ CANCELADO) |
 
 ## 2. Conflitos entre histórias
-| US | Conflito | Decisão |
-|----|----------|---------|
-| US-06 x US-08 | Carrinho persiste "sem login", mas finalizar exige conta | Carrinho salvo no app (24h); login exigido só no checkout |
+| US            | Conflito | Decisão                                                                                                   |
+|---------------|----------|-----------------------------------------------------------------------------------------------------------|
+| US-06 x US-08 | Carrinho persiste "sem login", mas finalizar exige conta | Carrinho salvo no app (24h); login exigido só no checkout                                                 |
+| US-           | Recuperar senha do usuario, mas não vamos enviar e-mail | Confirmamos informações do usuario (Nome,sobrenome, e-mail e cep) se os dados baterem, pode mudar a senha |
 
 ## 3. Adequações de escopo (simulações)
 | US | Requisito original | Implementação no PIT II | Motivo |
@@ -27,8 +28,6 @@ ambiguidades, conflitos e itens inviáveis no escopo acadêmico.
 ## 4. Lacunas identificadas
 - US-14 cobre só o cadastro: incluídas edição e desativação de produto (desativar em vez de excluir, para preservar o histórico de pedidos).
 - Não havia história para criar o administrador: ele é criado pela carga inicial do banco (migration).
-- Integração com o PIX exige certificação do banco central do Brasil, portanto, não será implementado.
-- Envio de e-mail pode ser feito, a API vai ficar rodando talvez no render, então os logs serão gerados la
 
 ## 5. Correções na documentação do PIT I
 - A tabela de tempo estava com os valores deslocados uma linha.
