@@ -1,0 +1,120 @@
+@startuml DER-Cupcakes
+hide circle
+skinparam linetype ortho
+
+entity usuario {
+  * id : BIGSERIAL <<PK>>
+  --
+  * nome : VARCHAR(100)
+  * sobrenome : VARCHAR(100)
+  * telefone : VARCHAR(20)
+  * email : VARCHAR(150) <<UNIQUE>>
+  * senha_hash : VARCHAR(100)
+  * perfil : VARCHAR(20)
+  * tentativas_falhas : INT
+    bloqueado_ate : TIMESTAMP
+  * criado_em : TIMESTAMP
+  * atualizado_em : TIMESTAMP
+}
+
+entity endereco {
+  * id : BIGSERIAL <<PK>>
+  --
+  * usuario_id : BIGINT <<FK>>
+  * logradouro : VARCHAR(100)
+  * numero : VARCHAR(10)
+  * cep : VARCHAR(9)
+  * complemento : VARCHAR(50)
+  * bairro : VARCHAR(50)
+  * cidade : VARCHAR(50)
+  * uf : VARCHAR(2)
+  * padrao: BOOLEAN
+  * criado_em : TIMESTAMP
+  * atualizado_em : TIMESTAMP
+}
+
+entity categoria {
+  * id : BIGSERIAL <<PK>>
+  --
+  * nome : VARCHAR(100)
+  * criado_em : TIMESTAMP
+  * atualizado_em : TIMESTAMP
+}
+
+entity produto {
+  * id : BIGSERIAL <<PK>>
+  --
+  * categoria_id : BIGINT <<FK>>
+  * nome : VARCHAR(100)
+  * descricao : VARCHAR(200)
+  * estoque : INT
+  * preco : DECIMAL
+  * foto_url : VARCHAR(100)
+  * ativo : BOOLEAN
+  * criado_em : TIMESTAMP
+  * atualizado_em : TIMESTAMP
+}
+
+entity pedido {
+  * id : BIGSERIAL <<PK>>
+  --
+  * usuario_id : BIGINT <<FK>>
+  * numero: BIGINT
+  * total: DECIMAL
+  * subtotal: DECIMAL
+  * frete : DECIMAL
+  * status : VARCHAR(50)
+  * entrega_logradouro : VARCHAR(100)
+  * entrga_numero : VARCHAR(10)
+  * entrega_cep : VARCHAR(9)
+  * entrega_complemento : VARCHAR(50)
+  * entrega_bairro : VARCHAR(50)
+  * entrega_cidade : VARCHAR(50)
+  * entrega_uf : VARCHAR(2)
+  * criado_em : TIMESTAMP
+  * atualizado_em : TIMESTAMP
+}
+
+entity item_pedido {
+  * id : BIGSERIAL <<PK>>
+  --
+  * pedido_id : BIGINT <<FK>>
+  * produto_id : BIGINT <<FK>>
+  * quantidade : INT
+  * preco_unitario : DECIMAL
+  * criado_em : TIMESTAMP
+}
+
+entity pagamento {
+  * id : BIGSERIAL <<PK>>
+  --
+  * pedido_id : BIGINT <<FK, UNIQUE>>
+  * forma : VARCHAR(50)
+  * status : VARCHAR(50)
+  * valor : DECIMAL
+  * bandeira : VARCHAR(50)
+  * ultimos_digitos : INT LIMIT 5
+  * pix_copia_cola : VARCHAR(100)
+  * pix_expira_em : TIMESTAMP
+  * criado_em : TIMESTAMP
+  * atualizado_em : TIMESTAMP
+}
+
+entity token_redefinicao_senha {
+  * id : BIGSERIAL <<PK>>
+  --
+  * usuario_id : BIGINT <<FK>>
+  * token_hash : VARCHAR(100)
+  * criado_em : TIMESTAMP
+  * expira_em : TIMESTAMP
+  * usado_em : TIMESTAMP
+}
+
+usuario   ||--o{ endereco                : possui
+usuario   ||--o{ pedido                  : realiza
+usuario   ||--o{ token_redefinicao_senha : solicita
+categoria ||--o{ produto                 : agrupa
+pedido    ||--|{ item_pedido             : contém
+produto   ||--o{ item_pedido             : aparece em
+pedido    ||--o| pagamento               : é pago por
+@enduml
