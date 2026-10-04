@@ -1,6 +1,6 @@
-# Dicionário de Dados - Cupcakes  App
+# Dicionário de Dados - Cupcakes App
 
-SGDB: PosgtreSQL 16 · Convenções: nomes em snake_case, sem acento;
+SGBD: PosgtreSQL 16 · Convenções: nomes em snake_case, sem acento;
 dinheiro em DECIMAL(10,2); datas em TIMESTAMP; enums gravados como texto.
 
 ## usuario
