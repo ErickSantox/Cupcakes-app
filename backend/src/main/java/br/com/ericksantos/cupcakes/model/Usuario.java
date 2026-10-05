@@ -1,6 +1,7 @@
 package br.com.ericksantos.cupcakes.model;
 
 
+import br.com.ericksantos.cupcakes.model.enums.Perfil;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.Size;
@@ -8,10 +9,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.hibernate.annotations.CreationTimestamp;
-import org.hibernate.annotations.JdbcType;
-import org.hibernate.annotations.JdbcTypeCode;
 import org.hibernate.annotations.UpdateTimestamp;
-import org.hibernate.type.SqlTypes;
 
 import java.time.LocalDateTime;
 
@@ -38,17 +36,18 @@ public class Usuario {
     private String telefone;
 
     @Email(message = "Por favor, insira um e-mail válido.")
-    @Column(nullable = false, length = 100)
+    @Column(nullable = false, length = 150, unique = true)
     private String email;
 
     @Column(nullable = false, length = 100)
     private String senhaHash;
 
+    @Enumerated(EnumType.STRING)
     @Column(nullable = false, length = 20)
-    private String perfil;
+    private Perfil perfil = Perfil.CLIENTE;
 
     @Column(nullable = false)
-    private Integer tentativasFalhas;
+    private Integer tentativasFalhas = 0;
 
     private LocalDateTime bloqueadoAte;
 

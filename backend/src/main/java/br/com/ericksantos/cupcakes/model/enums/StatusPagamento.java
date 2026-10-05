@@ -1,4 +1,4 @@
-package br.com.ericksantos.cupcakes.Enums;
+package br.com.ericksantos.cupcakes.model.enums;
 
 public enum StatusPagamento {
     PENDENTE,

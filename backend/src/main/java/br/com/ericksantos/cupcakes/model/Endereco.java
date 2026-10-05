@@ -36,7 +36,7 @@ public class Endereco {
     @Column(nullable = false, length = 8)
     private String cep;
 
-    @Column(nullable = false, length = 50)
+    @Column(length = 50)
     private String complemento;
 
     @Column(nullable = false, length = 50)
@@ -49,7 +49,7 @@ public class Endereco {
     private String uf;
 
     @Column(nullable = false)
-    private Boolean padrao;
+    private Boolean padrao = false;
 
     @CreationTimestamp
     @Column(nullable = false, updatable = false)

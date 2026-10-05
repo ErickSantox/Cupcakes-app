@@ -1,7 +1,7 @@
 package br.com.ericksantos.cupcakes.model;
 
-import br.com.ericksantos.cupcakes.Enums.FormaPagamento;
-import br.com.ericksantos.cupcakes.Enums.StatusPagamento;
+import br.com.ericksantos.cupcakes.model.enums.FormaPagamento;
+import br.com.ericksantos.cupcakes.model.enums.StatusPagamento;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -44,13 +44,12 @@ public class Pagamento {
     private String bandeira;
 
     @JdbcTypeCode(SqlTypes.CHAR)
-    @Column(nullable = false, length = 4)
+    @Column(length = 4)
     private String ultimosDigitos;
 
     @Column(length = 512)
     private String pixCopiaCola;
 
-    @Column(length = 50)
     private LocalDateTime pixExpiraEm;
 
     @CreationTimestamp

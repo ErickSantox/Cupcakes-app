@@ -1,7 +1,7 @@
 package br.com.ericksantos.cupcakes.model;
 
 
-import br.com.ericksantos.cupcakes.Enums.StatusPedido;
+import br.com.ericksantos.cupcakes.model.enums.StatusPedido;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -45,7 +45,7 @@ public class Pedido {
     @Column(nullable = false, length = 50)
     private StatusPedido status;
 
-    @Column(nullable = false, length = 100)
+    @Column(length = 100)
     private String entregaLogradouro;
 
     @Column(nullable = false, length = 10)
