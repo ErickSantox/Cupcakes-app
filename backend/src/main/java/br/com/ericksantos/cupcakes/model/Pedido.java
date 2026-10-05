@@ -45,7 +45,7 @@ public class Pedido {
     @Column(nullable = false, length = 50)
     private StatusPedido status;
 
-    @Column(length = 100)
+    @Column(nullable = false,length = 100)
     private String entregaLogradouro;
 
     @Column(nullable = false, length = 10)
@@ -55,7 +55,7 @@ public class Pedido {
     @Column(nullable = false, length = 8)
     private String entregaCep;
 
-    @Column(nullable = false, length = 50)
+    @Column( length = 50)
     private String entregaComplemento;
 
     @Column(nullable = false, length = 50)
