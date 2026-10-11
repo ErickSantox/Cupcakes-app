@@ -14,3 +14,6 @@
 
 ## Sequência — Finalizar pedido (US-08)
 ![Sequência](uml/img/sequencia-finalizar-pedido.png)
+
+## IHC
+- [Wireframes, mapas e mensagens](ihc/README.md)

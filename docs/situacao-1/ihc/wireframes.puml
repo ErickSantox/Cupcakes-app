@@ -1,0 +1,239 @@
+@startsalt login
+{+
+  <b> Cupcakes</b>
+  ..
+  E-mail
+  "seu@email.com          "
+  Senha
+  "********               "
+  [        Entrar         ]
+  ..
+  <u>Esqueci minha senha</u>
+  Não tem conta? <u>Criar conta</u>
+  ..
+  <color:red>⚠ E-mail ou senha inválidos</color>
+}
+@endsalt
+
+@startsalt cadastro
+{+
+  [<] <b>Criar conta</b>
+  ..
+  Nome | "                    "
+  Sobrenome | "                    "
+  Telefone | "(11) 9____-____     "
+  E-mail | "                    "
+  Senha | "********            "
+  . | <size:10>Mínimo 8 caracteres</size>
+  ..
+  [       Criar conta       ]
+  ..
+  <color:red>⚠ Este e-mail já está cadastrado</color>
+}
+@endsalt
+
+@startsalt vitrine
+{+
+  <b> Cupcakes</b> | . | [Entrar]
+  ..
+  {"🔍 Buscar por nome ou sabor   "}
+  Categoria: | ^Todas^
+  ..
+  {#
+    [foto] | <b>Brigadeiro Belga</b>-Chocolate 70%...-<b>R$ 12,90</b> | [ + ]
+    [foto] | <b>Red Velvet</b>-Cream cheese...-<b>R$ 14,50</b> | <color:gray>Indisponível</color>
+    [foto] | <b>Limão Siciliano</b>-Curd e merengue...-<b>R$ 12,50</b> | [ + ]
+  }
+  ..
+  {[🏪 Vitrine] | [🛒 Carrinho (2)] | [📦 Pedidos] | [👤 Conta]}
+}
+@endsalt
+
+@startsalt detalhe-produto
+{+
+  [<] <b>Brigadeiro Belga</b>
+  ..
+  {+ .        [ FOTO DO CUPCAKE ]        . }
+  ..
+  Massa de chocolate 70% com recheio
+  de brigadeiro e granulado belga.
+  ..
+  <b>R$ 12,90</b> | . | <size:10>30 em estoque</size>
+  Quantidade: | [ - ] | 1 | [ + ]
+  ..
+  [   Adicionar ao carrinho   ]
+  ..
+  <color:green>✔ Adicionado ao carrinho!</color>
+}
+@endsalt
+
+@startsalt carrinho
+{+
+  <b>Meu carrinho</b>
+  ..
+  {#
+    <b>Brigadeiro Belga</b>-R$ 12,90 | [-] 2 [+] | R$ 25,80 | [<&trash>]
+    <b>Limão Siciliano</b>-R$ 12,50 | [-] 1 [+] | R$ 12,50 | [<&trash>]
+  }
+  ..
+  Subtotal | . | <b>R$ 38,30</b>
+  <size:10>Faltam R$ 41,70 para frete grátis!</size>
+  ..
+  [     Finalizar pedido      ]
+  ..
+  <color:gray>Item removido.</color> | [Desfazer]
+  ..
+  {[🏪 Vitrine] | [🛒 Carrinho (3)] | [📦 Pedidos] | [👤 Conta]}
+}
+@endsalt
+
+@startsalt checkout
+{+
+  [<] <b>Finalizar pedido</b>
+  ..
+  <b>1. Endereço de entrega</b>
+  ^Casa - Rua das Flores, 120 - SP^
+  <u>+ Novo endereço</u>
+  ..
+  <b>2. Revisão</b>
+  2x Brigadeiro Belga | . | R$ 25,80
+  1x Limão Siciliano | . | R$ 12,50
+  Frete (entrega em 1 dia) | . | R$ 8,00
+  <b>Total</b> | . | <b>R$ 46,30</b>
+  ..
+  <b>3. Pagamento</b>
+  (X) Cartão de crédito
+  ( ) Cartão de débito
+  ( ) PIX
+  ..
+  [     Confirmar pedido      ]
+}
+@endsalt
+
+@startsalt pagamento-cartao
+{+
+  [<] <b>Pagamento — Cartão</b>
+  ..
+  Pedido CPK-2026-000123 | . | <b>R$ 46,30</b>
+  ..
+  Número do cartão
+  "4111 1111 1111 1111     " | VISA
+  Nome impresso
+  "                        "
+  Validade | "MM/AA" | CVV | "***"
+  ..
+  [        Pagar agora        ]
+  <size:10>🔒 Os dados do cartão não são armazenados.</size>
+  ..
+  <color:red>⚠ Pagamento recusado. Verifique os dados ou use outro cartão.</color>
+}
+@endsalt
+
+@startsalt pagamento-pix
+{+
+  [<] <b>Pagamento — PIX</b>
+  ..
+  Pedido CPK-2026-000123 | . | <b>R$ 46,30</b>
+  ..
+  {+ .       [  QR CODE  ]       . }
+  ..
+  Código copia e cola:
+  "00020126580014br.gov.bcb..."  | [Copiar]
+  ..
+  ⏱ Expira em <b>29:41</b>
+  <size:10>Aguardando pagamento... a tela atualiza sozinha.</size>
+  ..
+  [ Simular pagamento (demo) ]
+}
+@endsalt
+
+@startsalt meus-pedidos
+{+
+  <b>Meus pedidos</b>
+  ..
+  {#
+    <b>CPK-2026-000123</b>-11/10/2026 | R$ 46,30 | <color:orange>Em preparo</color> | [>]
+    <b>CPK-2026-000098</b>-02/10/2026 | R$ 88,40 | <color:green>Entregue</color> | [>]
+  }
+  ..
+  {[🏪 Vitrine] | [🛒 Carrinho] | [📦 Pedidos] | [👤 Conta]}
+}
+@endsalt
+
+@startsalt acompanhar-pedido
+{+
+  [<] <b>Pedido CPK-2026-000123</b>
+  ..
+  <color:green>✔</color> Pedido recebido | . | 11/10 14:02
+  <color:green>✔</color> Pagamento aprovado | . | 11/10 14:03
+  <color:orange>●</color> <b>Em preparo</b> | . | 11/10 14:20
+  <color:gray>○ Saiu para entrega</color>
+  <color:gray>○ Entregue</color>
+  ..
+  Entrega: Rua das Flores, 120 - São Paulo/SP
+  Total: <b>R$ 46,30</b> (Cartão VISA **** 1111)
+  ..
+  <size:10>🔄 Atualizando automaticamente...</size>
+}
+@endsalt
+
+@startsalt enderecos
+{+
+  [<] <b>Meus endereços</b> | . | <size:10>2 de 5</size>
+  ..
+  {#
+    ★ <b>Casa</b>-Rua das Flores, 120 - SP | [<&pencil>] | [<&trash>]
+    ☆ Trabalho-Av. Paulista, 1000 - SP | [<&pencil>] | [<&trash>]
+  }
+  ..
+  <b>Novo endereço</b>
+  CEP | "01310100" | [Buscar]
+  Logradouro | "Av. Paulista (ViaCEP)  "
+  Número | "    " | Complemento | "      "
+  Bairro | "Bela Vista            "
+  Cidade / UF | "São Paulo  " | "SP"
+  [X] Definir como padrão
+  [         Salvar          ]
+}
+@endsalt
+
+@startsalt admin-produtos
+{+
+  <b>Painel Admin</b> | . | [Pedidos] | <b>[Produtos]</b> | [Sair]
+  ..
+  {#
+    <b>Produto</b> | <b>Preço</b> | <b>Estoque</b> | <b>Ativo</b> | .
+    Brigadeiro Belga | R$ 12,90 | 30 | [X] | [<&pencil>]
+    Red Velvet | R$ 14,50 | 0 | [X] | [<&pencil>]
+    Paçoca | R$ 11,90 | 25 | [ ] | [<&pencil>]
+  }
+  [ + Novo produto ]
+  ..
+  <b>Cadastrar produto</b>
+  Nome | "                    "
+  Descrição | "                    "
+  Categoria | ^Chocolate^
+  Preço | "R$ 0,00 "
+  Estoque | "0     "
+  Foto | [Escolher imagem...]
+  [         Salvar          ]
+  <color:red>⚠ O preço deve ser maior que zero</color>
+}
+@endsalt
+
+@startsalt admin-pedidos
+{+
+  <b>Painel Admin</b> | . | <b>[Pedidos]</b> | [Produtos] | [Sair]
+  ..
+  Status: ^Todos^ | De: "01/10" | Até: "11/10" | [Filtrar]
+  ..
+  {#
+    <b>Número</b> | <b>Data</b> | <b>Total</b> | <b>Status</b> | .
+    CPK-2026-000123 | 11/10 | R$ 46,30 | ^Em preparo^ | [<&print>]
+    CPK-2026-000122 | 11/10 | R$ 25,80 | ^Pago^ | [<&print>]
+    CPK-2026-000098 | 02/10 | R$ 88,40 | Entregue | [<&print>]
+  }
+  ..
+  <color:green>✔ Status atualizado para "Saiu para entrega"</color>
+}
+@endsalt
