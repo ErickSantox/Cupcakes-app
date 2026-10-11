@@ -1,0 +1,60 @@
+@startuml casos-de-uso
+title Cupcakes App - Diagrama de Casos de Uso
+left to right direction
+skinparam packageStyle rectangle
+
+actor "Visitante" as Visitante
+actor "Cliente" as Cliente
+actor "Administrador" as Admin
+actor "ViaCEP" as ViaCEP <<sistema externo>>
+
+Cliente -|> Visitante
+
+rectangle "Cupcakes App" {
+  usecase "US-01 Cadastrar conta" as UC01
+  usecase "US-02 Fazer login" as UC02
+  usecase "Recuperar senha" as UCRS
+  usecase "US-03 Fazer logout" as UC03
+  usecase "US-04 Visualizar vitrine" as UC04
+  usecase "US-05 Buscar produto" as UC05
+  usecase "US-06 Adicionar ao carrinho" as UC06
+  usecase "US-07 Remover do carrinho" as UC07
+  usecase "US-08 Finalizar pedido" as UC08
+  usecase "US-09 Pagar com cartão" as UC09
+  usecase "US-10 Pagar com PIX" as UC10
+  usecase "US-11 Gerenciar endereços" as UC11
+  usecase "US-12 Calcular frete" as UC12
+  usecase "US-13 Acompanhar pedido" as UC13
+  usecase "US-14 Gerenciar produtos" as UC14
+  usecase "US-15 Gerenciar pedidos" as UC15
+}
+
+' Visitante (sem login)
+Visitante -- UC01
+Visitante -- UC02
+Visitante -- UC04
+Visitante -- UC05
+Visitante -- UC06
+Visitante -- UC07
+
+' Cliente (logado) — herda tudo do Visitante
+Cliente -- UC03
+Cliente -- UC08
+Cliente -- UC11
+Cliente -- UC13
+
+' Administrador
+Admin -- UC02
+Admin -- UC03
+Admin -- UC14
+Admin -- UC15
+
+' Relacionamentos entre casos de uso
+UCRS ..> UC02 : <<extend>>
+UC08 ..> UC12 : <<include>>
+UC09 ..> UC08 : <<extend>>
+UC10 ..> UC08 : <<extend>>
+
+' Sistema externo
+UC11 -- ViaCEP
+@enduml

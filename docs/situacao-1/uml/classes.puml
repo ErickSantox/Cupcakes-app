@@ -1,0 +1,141 @@
+@startuml classes
+title Cupcakes App - Diagrama de Classes (camada Model)
+hide circle
+skinparam classAttributeIconSize 0
+
+package "model.enums" {
+  enum Perfil {
+    CLIENTE
+    ADMIN
+  }
+  enum StatusPedido {
+    AGUARDANDO_PAGAMENTO
+    PAGO
+    EM_PREPARO
+    SAIU_PARA_ENTREGA
+    ENTREGUE
+    CANCELADO
+  }
+  enum FormaPagamento {
+    CARTAO_CREDITO
+    CARTAO_DEBITO
+    PIX
+  }
+  enum StatusPagamento {
+    PENDENTE
+    APROVADO
+    RECUSADO
+    EXPIRADO
+  }
+}
+
+package "model" {
+  class Usuario {
+    - id : Long
+    - nome : String
+    - sobrenome : String
+    - telefone : String
+    - email : String
+    - senhaHash : String
+    - perfil : Perfil
+    - tentativasFalhas : Integer
+    - bloqueadoAte : LocalDateTime
+    - criadoEm : LocalDateTime
+    - atualizadoEm : LocalDateTime
+  }
+
+  class Endereco {
+    - id : Long
+    - logradouro : String
+    - numero : String
+    - cep : String
+    - complemento : String
+    - bairro : String
+    - cidade : String
+    - uf : String
+    - padrao : Boolean
+    - criadoEm : LocalDateTime
+    - atualizadoEm : LocalDateTime
+  }
+
+  class Categoria {
+    - id : Long
+    - nome : String
+    - criadoEm : LocalDateTime
+    - atualizadoEm : LocalDateTime
+  }
+
+  class Produto {
+    - id : Long
+    - nome : String
+    - descricao : String
+    - estoque : Integer
+    - preco : BigDecimal
+    - fotoUrl : String
+    - ativo : Boolean
+    - criadoEm : LocalDateTime
+    - atualizadoEm : LocalDateTime
+  }
+
+  class Pedido {
+    - id : Long
+    - numero : String
+    - subtotal : BigDecimal
+    - frete : BigDecimal
+    - total : BigDecimal
+    - status : StatusPedido
+    - entregaLogradouro : String
+    - entregaNumero : String
+    - entregaCep : String
+    - entregaComplemento : String
+    - entregaBairro : String
+    - entregaCidade : String
+    - entregaUf : String
+    - criadoEm : LocalDateTime
+    - atualizadoEm : LocalDateTime
+  }
+
+  class ItemPedido {
+    - id : Long
+    - quantidade : Integer
+    - precoUnitario : BigDecimal
+    - criadoEm : LocalDateTime
+  }
+
+  class Pagamento {
+    - id : Long
+    - forma : FormaPagamento
+    - status : StatusPagamento
+    - valor : BigDecimal
+    - bandeira : String
+    - ultimosDigitos : String
+    - pixCopiaCola : String
+    - pixExpiraEm : LocalDateTime
+    - criadoEm : LocalDateTime
+    - atualizadoEm : LocalDateTime
+  }
+
+  class TokenRedefinicaoSenha {
+    - id : Long
+    - tokenHash : String
+    - criadoEm : LocalDateTime
+    - expiraEm : LocalDateTime
+    - usadoEm : LocalDateTime
+  }
+}
+
+' Associações (seta = lado que conhece o outro no código)
+Endereco "0..5" --> "1" Usuario : pertence a
+Pedido "0..*" --> "1" Usuario : feito por
+TokenRedefinicaoSenha "0..*" --> "1" Usuario : de
+Produto "0..*" --> "1" Categoria : classificado em
+ItemPedido "1..*" --> "1" Pedido : compõe
+ItemPedido "0..*" --> "1" Produto : refere-se a
+Pagamento "0..1" --> "1" Pedido : paga
+
+' Uso dos enums
+Usuario ..> Perfil
+Pedido ..> StatusPedido
+Pagamento ..> FormaPagamento
+Pagamento ..> StatusPagamento
+@enduml
