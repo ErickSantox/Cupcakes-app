@@ -1,6 +1,6 @@
 @startsalt login
 {+
-  <b>🧁 Cupcakes</b>
+  <b> Cupcakes</b>
   ..
   E-mail
   "seu@email.com          "
@@ -34,15 +34,15 @@
 
 @startsalt vitrine
 {+
-  <b>🧁 Cupcakes</b> | . | [Entrar]
+  <b> Cupcakes</b> | . | [Entrar]
   ..
   {"🔍 Buscar por nome ou sabor   "}
-  Categoria: ^Todas^
+  Categoria: | ^Todas^
   ..
   {#
-    [foto] | <b>Brigadeiro Belga</b>\nChocolate 70%...\n<b>R$ 12,90</b> | [ + ]
-    [foto] | <b>Red Velvet</b>\nCream cheese...\n<b>R$ 14,50</b> | <color:gray>Indisponível</color>
-    [foto] | <b>Limão Siciliano</b>\nCurd e merengue...\n<b>R$ 12,50</b> | [ + ]
+    [foto] | <b>Brigadeiro Belga</b>-Chocolate 70%...-<b>R$ 12,90</b> | [ + ]
+    [foto] | <b>Red Velvet</b>-Cream cheese...-<b>R$ 14,50</b> | <color:gray>Indisponível</color>
+    [foto] | <b>Limão Siciliano</b>-Curd e merengue...-<b>R$ 12,50</b> | [ + ]
   }
   ..
   {[🏪 Vitrine] | [🛒 Carrinho (2)] | [📦 Pedidos] | [👤 Conta]}
@@ -72,8 +72,8 @@
   <b>Meu carrinho</b>
   ..
   {#
-    <b>Brigadeiro Belga</b>\nR$ 12,90 | [-] 2 [+] | R$ 25,80 | [🗑]
-    <b>Limão Siciliano</b>\nR$ 12,50 | [-] 1 [+] | R$ 12,50 | [🗑]
+    <b>Brigadeiro Belga</b>-R$ 12,90 | [-] 2 [+] | R$ 25,80 | [<&trash>]
+    <b>Limão Siciliano</b>-R$ 12,50 | [-] 1 [+] | R$ 12,50 | [<&trash>]
   }
   ..
   Subtotal | . | <b>R$ 38,30</b>
@@ -152,8 +152,8 @@
   <b>Meus pedidos</b>
   ..
   {#
-    <b>CPK-2026-000123</b>\n11/10/2026 | R$ 46,30 | <color:orange>Em preparo</color> | [>]
-    <b>CPK-2026-000098</b>\n02/10/2026 | R$ 88,40 | <color:green>Entregue</color> | [>]
+    <b>CPK-2026-000123</b>-11/10/2026 | R$ 46,30 | <color:orange>Em preparo</color> | [>]
+    <b>CPK-2026-000098</b>-02/10/2026 | R$ 88,40 | <color:green>Entregue</color> | [>]
   }
   ..
   {[🏪 Vitrine] | [🛒 Carrinho] | [📦 Pedidos] | [👤 Conta]}
@@ -182,8 +182,8 @@
   [<] <b>Meus endereços</b> | . | <size:10>2 de 5</size>
   ..
   {#
-    ★ <b>Casa</b>\nRua das Flores, 120 - SP | [✏] | [🗑]
-    ☆ Trabalho\nAv. Paulista, 1000 - SP | [✏] | [🗑]
+    ★ <b>Casa</b>-Rua das Flores, 120 - SP | [<&pencil>] | [<&trash>]
+    ☆ Trabalho-Av. Paulista, 1000 - SP | [<&pencil>] | [<&trash>]
   }
   ..
   <b>Novo endereço</b>
@@ -203,9 +203,9 @@
   ..
   {#
     <b>Produto</b> | <b>Preço</b> | <b>Estoque</b> | <b>Ativo</b> | .
-    Brigadeiro Belga | R$ 12,90 | 30 | [X] | [✏]
-    Red Velvet | R$ 14,50 | 0 | [X] | [✏]
-    Paçoca | R$ 11,90 | 25 | [ ] | [✏]
+    Brigadeiro Belga | R$ 12,90 | 30 | [X] | [<&pencil>]
+    Red Velvet | R$ 14,50 | 0 | [X] | [<&pencil>]
+    Paçoca | R$ 11,90 | 25 | [ ] | [<&pencil>]
   }
   [ + Novo produto ]
   ..
@@ -229,9 +229,9 @@
   ..
   {#
     <b>Número</b> | <b>Data</b> | <b>Total</b> | <b>Status</b> | .
-    CPK-2026-000123 | 11/10 | R$ 46,30 | ^Em preparo^ | [🖨]
-    CPK-2026-000122 | 11/10 | R$ 25,80 | ^Pago^ | [🖨]
-    CPK-2026-000098 | 02/10 | R$ 88,40 | Entregue | [🖨]
+    CPK-2026-000123 | 11/10 | R$ 46,30 | ^Em preparo^ | [<&print>]
+    CPK-2026-000122 | 11/10 | R$ 25,80 | ^Pago^ | [<&print>]
+    CPK-2026-000098 | 02/10 | R$ 88,40 | Entregue | [<&print>]
   }
   ..
   <color:green>✔ Status atualizado para "Saiu para entrega"</color>
