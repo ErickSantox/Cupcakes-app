@@ -1,0 +1,50 @@
+@startuml sequencia-finalizar-pedido
+title US-08 - Finalizar pedido (Diagrama de Sequência)
+autonumber
+
+actor Cliente
+participant "App Ionic\n(Checkout)" as App
+participant "PedidoController" as Ctrl
+participant "PedidoService" as Svc
+participant "EnderecoRepository" as EndRepo
+participant "ProdutoRepository" as ProdRepo
+participant "FreteService" as Frete
+participant "PedidoRepository" as PedRepo
+
+Cliente -> App : Revisa o carrinho e confirma
+App -> Ctrl : POST /api/pedidos\n{itens, enderecoId, formaPagamento} + JWT
+Ctrl -> Ctrl : @Valid no PedidoRequest
+Ctrl -> Svc : criar(usuarioLogado, request)
+activate Svc
+note right of Svc : @Transactional\n(tudo ou nada)
+
+Svc -> EndRepo : findByIdAndUsuarioId(enderecoId, usuarioId)
+alt endereço não existe ou é de outro usuário
+  EndRepo --> Svc : vazio
+  Svc --> Ctrl : NaoEncontradoException
+  Ctrl --> App : 404 Not Found
+end
+EndRepo --> Svc : endereco
+
+loop para cada item do carrinho
+  Svc -> ProdRepo : findById(produtoId)
+  ProdRepo --> Svc : produto (preço atual do banco)
+  alt produto inativo, sem estoque ou qtd > 50
+    Svc --> Ctrl : RegraNegocioException
+    Ctrl --> App : 422 + mensagem amigável
+  end
+end
+
+Svc -> Frete : calcular(endereco.cep, subtotal)
+Frete --> Svc : valor (0 se subtotal >= R$ 80) + prazo
+
+Svc -> Svc : gerar número (CPK-AAAA-NNNNNN)\ncongelar preço nos itens\ncopiar endereço para o pedido\nbaixar estoque\nstatus = AGUARDANDO_PAGAMENTO
+Svc -> PedRepo : save(pedido)
+PedRepo --> Svc : pedido salvo
+Svc -> Svc : registrar "e-mail" de confirmação em log
+Svc --> Ctrl : PedidoResponse
+deactivate Svc
+
+Ctrl --> App : 201 Created\n{numero, total, status}
+App --> Cliente : Exibe nº do pedido e\nvai para o pagamento (US-09 / US-10)
+@enduml
