@@ -1,0 +1,43 @@
+@startuml mapa-conceitual
+!pragma layout smetana
+title Mapa Conceitual — Loja Virtual de Cupcakes
+skinparam rectangle {
+  RoundCorner 20
+}
+left to right direction
+
+rectangle "Loja de Cupcakes" as Loja #F8BBD0
+rectangle "Cliente" as Cliente
+rectangle "Administrador" as Admin
+rectangle "Vitrine" as Vitrine
+rectangle "Cupcake" as Cupcake
+rectangle "Categoria" as Categoria
+rectangle "Carrinho" as Carrinho
+rectangle "Pedido" as Pedido
+rectangle "Pagamento" as Pagamento
+rectangle "Cartão" as Cartao
+rectangle "PIX" as Pix
+rectangle "Entrega" as Entrega
+rectangle "Endereço" as Endereco
+rectangle "Frete" as Frete
+rectangle "Status" as Status
+
+Loja --> Vitrine : expõe
+Loja --> Admin : é gerida pelo
+Vitrine --> Cupcake : exibe
+Cupcake --> Categoria : agrupado por
+Cliente --> Vitrine : navega na
+Cliente --> Carrinho : monta o
+Carrinho --> Cupcake : contém
+Carrinho --> Pedido : vira um
+Pedido --> Pagamento : é quitado por
+Pagamento --> Cartao : pode ser
+Pagamento --> Pix : pode ser
+Pedido --> Entrega : gera uma
+Entrega --> Endereco : vai para o
+Endereco --> Frete : define o
+Pedido --> Status : possui
+Cliente --> Status : acompanha
+Admin --> Cupcake : cadastra
+Admin --> Status : atualiza
+@enduml

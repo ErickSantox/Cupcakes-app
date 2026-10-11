@@ -1,0 +1,49 @@
+@startuml mapa-navegacional
+!pragma layout smetana
+title Mapa Navegacional — Cupcakes App
+hide empty description
+
+state "Área do Cliente" as C {
+  state Vitrine
+  state "Detalhe do produto" as Detalhe
+  state Carrinho
+  state Login
+  state Cadastro
+  state "Recuperar senha" as Recuperar
+  state Checkout
+  state "Pagamento Cartão" as Cartao
+  state "Pagamento PIX" as Pix
+  state "Meus pedidos" as Pedidos
+  state "Acompanhar pedido" as Acompanhar
+  state "Meus endereços" as Enderecos
+}
+
+state "Painel Administrador" as A {
+  state "Admin: Pedidos" as APedidos
+  state "Admin: Produtos" as AProdutos
+}
+
+[*] --> Vitrine
+Vitrine --> Detalhe : toca no produto
+Detalhe --> Carrinho : adicionar
+Vitrine --> Carrinho : aba Carrinho
+Carrinho --> Login : finalizar (sem login)
+Carrinho --> Checkout : finalizar (logado)
+Login --> Cadastro : criar conta
+Login --> Recuperar : esqueci a senha
+Cadastro --> Login
+Login --> Checkout : veio do carrinho
+Login --> Vitrine : login comum
+Checkout --> Enderecos : + novo endereço
+Enderecos --> Checkout
+Checkout --> Cartao : cartão
+Checkout --> Pix : PIX
+Cartao --> Acompanhar : aprovado
+Pix --> Acompanhar : pago
+Vitrine --> Pedidos : aba Pedidos
+Pedidos --> Acompanhar : toca no pedido
+
+Login --> APedidos : perfil ADMIN
+APedidos --> AProdutos : menu
+AProdutos --> APedidos : menu
+@enduml
