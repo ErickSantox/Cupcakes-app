@@ -3,8 +3,6 @@ package br.com.ericksantos.cupcakes.model;
 
 import br.com.ericksantos.cupcakes.model.enums.Perfil;
 import jakarta.persistence.*;
-import jakarta.validation.constraints.Email;
-import jakarta.validation.constraints.Size;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -24,18 +22,15 @@ public class Usuario {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Size(min = 2, message = "O Nome deve ter no mínimo 2 caracteres.")
     @Column(nullable = false,length = 100)
     private String nome;
 
-    @Size(min = 2, message = "O sobrenome deve ter no mínimo 2 caracteres.")
     @Column(nullable = false, length = 100)
     private String sobrenome;
 
     @Column(nullable = false, length = 11)
     private String telefone;
 
-    @Email(message = "Por favor, insira um e-mail válido.")
     @Column(nullable = false, length = 150, unique = true)
     private String email;
 
