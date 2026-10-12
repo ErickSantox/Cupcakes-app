@@ -5,13 +5,15 @@ import br.com.ericksantos.cupcakes.dto.ErroResponse;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.converter.HttpMessageNotReadableException;
+import org.springframework.web.HttpRequestMethodNotSupportedException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+import org.springframework.web.servlet.resource.NoResourceFoundException;
 
 import java.time.LocalDateTime;
-import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
@@ -54,4 +56,27 @@ public class GlobalExceptionHandler {
         log.error("Erro inesperado", ex);
         return ErroResponse.de(500, "Erro interno", "Ocorreu um erro inesperado. Tente novamente.");
     }
+
+    @ExceptionHandler(NoResourceFoundException.class)
+    @ResponseStatus(HttpStatus.NOT_FOUND)
+    public ErroResponse noResourceFound(NoResourceFoundException ex) {
+        log.debug(ex.getMessage());
+        return ErroResponse.de(404,"Não encontrado","Recurso não encontrado");
+    }
+
+    @ExceptionHandler(HttpMessageNotReadableException.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public ErroResponse invalidBody(HttpMessageNotReadableException ex) {
+        log.debug(ex.getMessage());
+        return ErroResponse.de(400,"Requisição inválida","Corpo da requisição inválido");
+    }
+
+    @ExceptionHandler(HttpRequestMethodNotSupportedException.class)
+    @ResponseStatus(HttpStatus.METHOD_NOT_ALLOWED)
+    public ErroResponse notAllowed(HttpRequestMethodNotSupportedException ex) {
+        log.debug(ex.getMessage());
+        return ErroResponse.de(405,"Método não permitido","Método não permitido para esta rota");
+    }
+
+
 }
