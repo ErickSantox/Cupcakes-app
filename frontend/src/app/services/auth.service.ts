@@ -9,7 +9,6 @@ export class AuthService {
     private http = inject(HttpClient);
 
     cadastrar(dados: CadastroRequest): Observable<UsuarioResponse> {
-
         return this.http.post<UsuarioResponse>(`${environment.apiUrl}/auth/cadastro`, dados);
     }
 }

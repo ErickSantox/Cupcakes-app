@@ -1,37 +1,36 @@
-import { Component, inject, OnInit, signal } from '@angular/core';
-import { CommonModule } from '@angular/common';
-import { FormsModule, ReactiveFormsModule, FormBuilder, Validators } from '@angular/forms';
-import { IonContent, IonHeader, IonTitle, IonToolbar, IonInput, IonButton, IonSpinner, IonBackButton, IonButtons, ToastController } from '@ionic/angular';
+import { Component, inject, signal } from '@angular/core';
+import { ReactiveFormsModule, FormBuilder, Validators } from '@angular/forms';
+import { Router } from '@angular/router';
+import { finalize } from 'rxjs';
+import {
+  IonContent, IonHeader, IonTitle, IonToolbar, IonButtons, IonBackButton,
+  IonInput, IonButton, IonSpinner, ToastController,
+} from '@ionic/angular';
 import { AuthService } from '../../services/auth.service';
 import { CadastroRequest } from '../../models/usuario.model';
-import { Router } from '@angular/router';
-import { finalize } from "rxjs";
 
 @Component({
   selector: 'app-cadastro',
   templateUrl: './cadastro.page.html',
   styleUrls: ['./cadastro.page.scss'],
-  imports: [IonContent, IonHeader, IonTitle, IonToolbar, CommonModule, FormsModule, ReactiveFormsModule, IonInput, IonButton, IonSpinner, IonBackButton, IonButtons]
+  imports: [
+    ReactiveFormsModule,
+    IonContent, IonHeader, IonTitle, IonToolbar, IonButtons, IonBackButton,
+    IonInput, IonButton, IonSpinner,
+  ],
 })
-export class CadastroPage implements OnInit {
-
-
-  constructor() { }
-
-  ngOnInit() {
-  }
-
+export class CadastroPage {
   private fb = inject(FormBuilder);
   private authService = inject(AuthService);
   private router = inject(Router);
   private toast = inject(ToastController);
 
   form = this.fb.nonNullable.group({
-    nome: ['', [Validators.required, Validators.minLength(2)]],
+    nome:      ['', [Validators.required, Validators.minLength(2)]],
     sobrenome: ['', [Validators.required, Validators.minLength(2)]],
-    telefone: ['', [Validators.required, Validators.pattern(/^\d{10,11}$/)]],
-    email: ['', [Validators.required, Validators.email]],
-    senha: ['', [Validators.required, Validators.minLength(8), Validators.maxLength(72)]],
+    telefone:  ['', [Validators.required, Validators.pattern(/^\d{10,11}$/)]],
+    email:     ['', [Validators.required, Validators.email]],
+    senha:     ['', [Validators.required, Validators.minLength(8), Validators.maxLength(72)]],
   });
 
   enviando = signal(false);
@@ -75,5 +74,4 @@ export class CadastroPage implements OnInit {
   erroDe(campo: string, padrao: string): string {
     return this.form.get(campo)?.errors?.['servidor'] ?? padrao;
   }
-
 }
