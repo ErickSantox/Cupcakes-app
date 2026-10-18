@@ -58,7 +58,7 @@ export class CadastroPage {
           });
           await t.present();
           this.form.reset();
-          this.router.navigateByUrl('/tabs/conta');
+          this.router.navigateByUrl('/login');
         },
         error: (err) => {
           const campos = err.error?.campos as Record<string, string> | null;

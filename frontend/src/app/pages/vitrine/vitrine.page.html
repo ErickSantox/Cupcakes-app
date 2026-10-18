@@ -1,6 +1,11 @@
 <ion-header [translucent]="true">
   <ion-toolbar>
-    <ion-title>Vitrine</ion-title>
+    <ion-title>
+      <div class="logo">
+        <img src="assets/img/logo.png" alt="" />
+        <span>Cupcakes</span>
+      </div>
+    </ion-title>
   </ion-toolbar>
 </ion-header>
 
@@ -11,6 +16,6 @@
   </ion-header>
 
 
-        <p class="ion-padding">API: {{ apiStatus() }}</p>
+  <p class="ion-padding">API: {{ apiStatus() }}</p>
 
 </ion-content>

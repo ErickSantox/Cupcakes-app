@@ -39,3 +39,6 @@ _Em breve._
 **Erick dos Santos Pereira** · Engenharia de Software
 
 Desenvolvido com apoio do Claude (IA da Anthropic) para mentoria e revisão de código. Commits com participação da IA estão marcados com `Co-Authored-By`.
+
+## Créditos
+- Ícone de cupcake: [Streamline](https://www.streamlinehq.com) (licença CC BY 4.0)
