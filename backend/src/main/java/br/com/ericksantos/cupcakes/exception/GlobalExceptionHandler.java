@@ -78,5 +78,15 @@ public class GlobalExceptionHandler {
         return ErroResponse.de(405,"Método não permitido","Método não permitido para esta rota");
     }
 
+    @ExceptionHandler(CredenciaisInvalidasException.class)
+    @ResponseStatus(HttpStatus.UNAUTHORIZED)
+    public ErroResponse credenciaisInvalidas(CredenciaisInvalidasException ex) {
+        return ErroResponse.de(401, "Não autorizado", ex.getMessage());
+    }
 
+    @ExceptionHandler(ContaBloqueadaException.class)
+    @ResponseStatus(HttpStatus.LOCKED)
+    public ErroResponse contaBloqueada(ContaBloqueadaException ex) {
+        return ErroResponse.de(423, "Conta bloqueada", ex.getMessage());
+    }
 }
