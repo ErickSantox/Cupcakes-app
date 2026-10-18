@@ -1,2 +1,38 @@
-// For information on how to create your own theme, please refer to:
-// https://ionicframework.com/docs/theming/
+// Tema "Confeitaria" — Cupcakes App
+:root {
+  /* Primária: rosa framboesa (botões, links, aba ativa) */
+  --ion-color-primary: #d63f8c;
+  --ion-color-primary-rgb: 214, 63, 140;
+  --ion-color-primary-contrast: #ffffff;
+  --ion-color-primary-contrast-rgb: 255, 255, 255;
+  --ion-color-primary-shade: #bc377b;
+  --ion-color-primary-tint: #da5298;
+
+  /* Secundária: chocolate (títulos, preços) */
+  --ion-color-secondary: #6b3e26;
+  --ion-color-secondary-rgb: 107, 62, 38;
+  --ion-color-secondary-contrast: #ffffff;
+  --ion-color-secondary-contrast-rgb: 255, 255, 255;
+  --ion-color-secondary-shade: #5e3721;
+  --ion-color-secondary-tint: #7a513c;
+
+  /* Terciária: glacê (fundos de destaque, badges) */
+  --ion-color-tertiary: #f7c8d6;
+  --ion-color-tertiary-rgb: 247, 200, 214;
+  --ion-color-tertiary-contrast: #000000;
+  --ion-color-tertiary-contrast-rgb: 0, 0, 0;
+  --ion-color-tertiary-shade: #d9b0bc;
+  --ion-color-tertiary-tint: #f8ceda;
+
+  /* Fundo creme e texto chocolate-escuro */
+  --ion-background-color: #fff8f3;
+  --ion-background-color-rgb: 255, 248, 243;
+  --ion-text-color: #3b2418;
+  --ion-text-color-rgb: 59, 36, 24;
+
+  --ion-toolbar-background: #fff8f3;
+  --ion-tab-bar-background: #ffffff;
+
+  /* Fonte do texto (os títulos ficam no global.scss) */
+  --ion-font-family: 'Nunito', sans-serif;
+}
