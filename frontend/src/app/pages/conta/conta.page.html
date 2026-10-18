@@ -12,7 +12,15 @@
   </ion-header>
 
 
-  <section class="ion-padding">
-    <ion-button expand="block" color="primary" routerLink="/cadastro">Criar conta</ion-button>
+    <section class="ion-padding">
+    @if (sessao.logado()) {
+      <h2>Olá, {{ sessao.usuario()?.nome }}!</h2>
+      <p>{{ sessao.usuario()?.email }}</p>
+      <ion-button expand="block" fill="outline" color="medium" (click)="sair()">Sair</ion-button>
+    } @else {
+      <p>Entre para fazer pedidos e acompanhar suas entregas.</p>
+      <ion-button expand="block" routerLink="/login">Entrar</ion-button>
+      <ion-button expand="block" fill="clear" routerLink="/cadastro">Criar conta</ion-button>
+    }
   </section>
 </ion-content>

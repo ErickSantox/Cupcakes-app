@@ -1,0 +1,32 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-back-button defaultHref="/tabs/conta"></ion-back-button>
+    </ion-buttons>
+    <ion-title>Entrar</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content class="ion-padding">
+  <form [formGroup]="form" (ngSubmit)="entrar()">
+
+    <ion-input class="ion-margin-bottom" label="E-mail" labelPlacement="floating" fill="outline"
+      type="email" formControlName="email" errorText="Informe um e-mail válido."></ion-input>
+
+    <ion-input class="ion-margin-bottom" label="Senha" labelPlacement="floating" fill="outline"
+      type="password" formControlName="senha" errorText="Informe a senha."></ion-input>
+
+    <ion-button expand="block" type="submit" [disabled]="enviando()">
+      @if (enviando()) {
+        <ion-spinner name="crescent"></ion-spinner>
+      } @else {
+        Entrar
+      }
+    </ion-button>
+
+  </form>
+
+  <p class="ion-text-center">
+    Não tem conta? <a routerLink="/cadastro">Criar conta</a>
+  </p>
+</ion-content>
