@@ -53,5 +53,4 @@ public class Usuario {
     @UpdateTimestamp
     @Column(nullable = false)
     private LocalDateTime atualizadoEm;
-
 }
