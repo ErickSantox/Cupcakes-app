@@ -1,0 +1,44 @@
+.foto {
+  display: block;
+  width: 100%;
+  max-width: 800px;
+  margin: 0 auto;
+  aspect-ratio: 16 / 9;
+  object-fit: cover;
+}
+
+.foto.sem-foto {
+  object-fit: contain;
+  padding: 10%;
+  background: var(--ion-color-tertiary);
+  opacity: 0.6;
+}
+
+.ion-padding {
+  max-width: 800px;
+  margin: 0 auto;
+}
+
+.categoria {
+  color: var(--ion-color-medium);
+  font-size: 0.85rem;
+}
+
+.linha {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 16px;
+}
+
+.preco {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: var(--ion-color-secondary);
+}
+
+.carregando {
+  display: flex;
+  justify-content: center;
+  padding: 48px;
+}

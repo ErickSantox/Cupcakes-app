@@ -1,4 +1,4 @@
-<ion-header [translucent]="true">
+<ion-header>
   <ion-toolbar>
     <ion-title>
       <div class="logo">
@@ -9,13 +9,65 @@
   </ion-toolbar>
 </ion-header>
 
-<ion-content [fullscreen]="true">
-  <ion-header collapse="condense">
-    <ion-toolbar>
-    </ion-toolbar>
-  </ion-header>
+<ion-content>
+  <ion-refresher slot="fixed" (ionRefresh)="carregarProdutos($event)">
+    <ion-refresher-content></ion-refresher-content>
+  </ion-refresher>
 
+  <div class="container">
 
-  <p class="ion-padding">API: {{ apiStatus() }}</p>
+    <!-- Filtro por categoria (US-04 CA#3) -->
+    <div class="chips">
+      <ion-chip [color]="categoriaSelecionada() === null ? 'primary' : 'medium'"
+                (click)="selecionarCategoria(null)">
+        <ion-label>Todos</ion-label>
+      </ion-chip>
+      @for (c of categorias(); track c.id) {
+        <ion-chip [color]="categoriaSelecionada() === c.id ? 'primary' : 'medium'"
+                  (click)="selecionarCategoria(c.id)">
+          <ion-label>{{ c.nome }}</ion-label>
+        </ion-chip>
+      }
+    </div>
 
+    <ion-grid>
+      <ion-row>
+        @if (carregando()) {
+          @for (e of esqueletos; track e) {
+            <ion-col size="6" size-md="4" size-lg="3" size-xl="2">
+              <ion-card>
+                <ion-skeleton-text animated class="foto"></ion-skeleton-text>
+                <ion-card-content>
+                  <ion-skeleton-text animated style="width: 80%"></ion-skeleton-text>
+                  <ion-skeleton-text animated style="width: 40%"></ion-skeleton-text>
+                </ion-card-content>
+              </ion-card>
+            </ion-col>
+          }
+        } @else {
+          @for (p of produtos(); track p.id) {
+            <ion-col size="6" size-md="4" size-lg="3" size-xl="2">
+              <ion-card [routerLink]="['/produto', p.id]" [class.esgotado]="!p.disponivel">
+                <div class="foto-wrap">
+                  <ion-img class="foto" [src]="fotoDe(p)" [alt]="p.nome" (ionError)="fotoPadrao($event)"></ion-img>
+                  @if (!p.disponivel) {
+                    <ion-badge color="medium" class="selo">Esgotado</ion-badge>
+                  }
+                </div>
+                <ion-card-content>
+                  <h3>{{ p.nome }}</h3>
+                  <p class="preco">{{ p.preco | currency: 'BRL' }}</p>
+                </ion-card-content>
+              </ion-card>
+            </ion-col>
+          } @empty {
+            <ion-col size="12" class="vazio">
+              <p>Nenhum cupcake nesta categoria por enquanto. 🧁</p>
+            </ion-col>
+          }
+        }
+      </ion-row>
+    </ion-grid>
+
+  </div>
 </ion-content>

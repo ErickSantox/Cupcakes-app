@@ -1,0 +1,30 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-back-button defaultHref="/tabs/vitrine"></ion-back-button>
+    </ion-buttons>
+    <ion-title>{{ produto()?.nome ?? 'Carregando...' }}</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  @if (produto(); as p) {
+    <ion-img class="foto" [src]="'assets' + p.fotoUrl" [alt]="p.nome" (ionError)="fotoPadrao($event)"></ion-img>
+    <div class="ion-padding">
+      <h1>{{ p.nome }}</h1>
+      <p>{{ p.descricao }}</p>
+      <p class="categoria">{{ p.categoriaNome }}</p>
+      <div class="linha">
+        <span class="preco">{{ p.preco | currency: 'BRL' }}</span>
+        @if (p.disponivel) {
+          <span class="estoque">{{ p.estoque }} em estoque</span>
+        } @else {
+          <ion-badge color="medium">Esgotado</ion-badge>
+        }
+      </div>
+      <!-- Quantidade e "Adicionar ao carrinho" entram na US-06 -->
+    </div>
+  } @else {
+    <div class="carregando"><ion-spinner name="crescent"></ion-spinner></div>
+  }
+</ion-content>
