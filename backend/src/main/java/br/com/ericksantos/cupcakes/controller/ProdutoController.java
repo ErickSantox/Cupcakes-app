@@ -19,11 +19,6 @@ public class ProdutoController {
         return produtoService.listar(categoriaId);
     }
 
-    @GetMapping("/{categoriaId}")
-    public List<ProdutoResponse> listarPeloId(@PathVariable Long categoriaId){
-        return produtoService.listar(categoriaId);
-    }
-
     @GetMapping("/{id}")
     public ProdutoResponse buscarPorId(@PathVariable Long id) {
         return produtoService.buscar(id);
