@@ -73,7 +73,7 @@ class ProdutoControllerTest {
     // Detalhe de um produto ativo
     @Test
     void deveBuscarProdutoPorId() throws Exception {
-        Produto produto = produtoRepository.findByAtivoTrueOrderByNomeAsc().get(0);
+        Produto produto = produtoRepository.buscarVitrine(2L,"").get(0);
 
         mockMvc.perform(get("/api/produtos/" + produto.getId()))
             .andExpect(status().isOk())
@@ -98,8 +98,50 @@ class ProdutoControllerTest {
     }
 
     private Produto desativarPrimeiroProduto() {
-        Produto produto = produtoRepository.findByAtivoTrueOrderByNomeAsc().get(0);
+        Produto produto = produtoRepository.buscarVitrine(2L,"").get(0);
         produto.setAtivo(false);
         return produtoRepository.save(produto);
+    }
+
+    // US-05 CA#1: busca por nome ou sabor (descrição)
+    @Test
+    void deveBuscarPorNomeOuDescricao() throws Exception {
+        mockMvc.perform(get("/api/produtos").param("busca", "chocolate"))
+            .andExpect(status().isOk())
+            .andExpect(jsonPath("$").isNotEmpty())
+            .andExpect(jsonPath("$[?(@.nome == 'Cenoura com Chocolate')]").isNotEmpty())   // está no nome
+            .andExpect(jsonPath("$[?(@.nome == 'Brigadeiro Belga')]").isNotEmpty())        // está na descrição
+            .andExpect(jsonPath("$[?(@.nome == 'Limão Siciliano')]").isEmpty());           // não tem chocolate
+    }
+
+    // US-05 RN#1: não diferencia maiúsculas/minúsculas
+    @Test
+    void deveBuscarSemDiferenciarMaiusculas() throws Exception {
+        mockMvc.perform(get("/api/produtos").param("busca", "PAÇOCA"))
+            .andExpect(status().isOk())
+            .andExpect(jsonPath("$[?(@.nome == 'Paçoca')]").isNotEmpty());
+    }
+
+    // US-05 CA#3: busca sem resultado devolve lista vazia (não é erro!)
+    @Test
+    void deveRetornarListaVaziaQuandoBuscaNaoEncontra() throws Exception {
+        mockMvc.perform(get("/api/produtos").param("busca", "pizza"))
+            .andExpect(status().isOk())
+            .andExpect(jsonPath("$", hasSize(0)));
+    }
+
+    // Os dois filtros juntos
+    @Test
+    void deveCombinarBuscaECategoria() throws Exception {
+        Categoria classicos = categoriaRepository.findAll().stream()
+            .filter(c -> c.getNome().equals("Clássicos"))
+            .findFirst().orElseThrow();
+
+        mockMvc.perform(get("/api/produtos")
+                .param("busca", "chocolate")
+                .param("categoriaId", classicos.getId().toString()))
+            .andExpect(status().isOk())
+            .andExpect(jsonPath("$", hasSize(1)))
+            .andExpect(jsonPath("$[0].nome").value("Cenoura com Chocolate"));
     }
 }

@@ -25,15 +25,10 @@ public class ProdutoService {
 
 
     @Transactional(readOnly = true)
-    public List<ProdutoResponse> listar(Long categoriaId) {
-        List<Produto>  produtos;
+    public List<ProdutoResponse> listar(Long categoriaId, String busca) {
+        String buscaNormalizada = (busca == null || busca.isBlank()) ? null : busca.trim();
 
-        if (categoriaId == null) {
-            produtos = produtoRepository.findByAtivoTrueOrderByNomeAsc();
-            return produtos.stream().map(ProdutoResponse::de).toList();
-        }
-
-        produtos = produtoRepository.findByAtivoTrueAndCategoriaIdOrderByNomeAsc(categoriaId);
+        List<Produto> produtos = produtoRepository.buscarVitrine(categoriaId, buscaNormalizada);
 
         return produtos.stream().map(ProdutoResponse::de).toList();
     }

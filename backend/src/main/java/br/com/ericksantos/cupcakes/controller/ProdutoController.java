@@ -15,8 +15,9 @@ public class ProdutoController {
     private final ProdutoService produtoService;
 
     @GetMapping()
-    public List<ProdutoResponse> listar(@RequestParam(required = false) Long categoriaId){
-        return produtoService.listar(categoriaId);
+    public List<ProdutoResponse> listar(@RequestParam(required = false) Long categoriaId,
+                                        @RequestParam(required= false) String busca){
+        return produtoService.listar(categoriaId,busca);
     }
 
     @GetMapping("/{id}")

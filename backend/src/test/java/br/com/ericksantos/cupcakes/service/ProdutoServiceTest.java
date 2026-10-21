@@ -26,23 +26,21 @@ class ProdutoServiceTest {
     @InjectMocks private ProdutoService produtoService;
 
     @Test
-    void deveUsarConsultaFiltradaQuandoCategoriaInformada() {
-        when(produtoRepository.findByAtivoTrueAndCategoriaIdOrderByNomeAsc(2L)).thenReturn(List.of());
+    void deveRepassarFiltrosParaAConsulta() {
+        when(produtoRepository.buscarVitrine(2L, "chocolate")).thenReturn(List.of());
 
-        produtoService.listar(2L);
+        produtoService.listar(2L, "  chocolate  ");
 
-        verify(produtoRepository).findByAtivoTrueAndCategoriaIdOrderByNomeAsc(2L);
-        verify(produtoRepository, never()).findByAtivoTrueOrderByNomeAsc();
+        verify(produtoRepository).buscarVitrine(2L, "chocolate");   // trim aplicado
     }
 
     @Test
-    void deveListarTodosQuandoCategoriaNula() {
-        when(produtoRepository.findByAtivoTrueOrderByNomeAsc()).thenReturn(List.of());
+    void deveTratarBuscaEmBrancoComoNula() {
+        when(produtoRepository.buscarVitrine(null, null)).thenReturn(List.of());
 
-        produtoService.listar(null);
+        produtoService.listar(null, "   ");
 
-        verify(produtoRepository).findByAtivoTrueOrderByNomeAsc();
-        verify(produtoRepository, never()).findByAtivoTrueAndCategoriaIdOrderByNomeAsc(null);
+        verify(produtoRepository).buscarVitrine(null, null);         // filtro desligado
     }
 
     @Test
