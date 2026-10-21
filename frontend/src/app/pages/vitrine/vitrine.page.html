@@ -16,6 +16,13 @@
 
   <div class="container">
 
+    <ion-searchbar
+      placeholder="Buscar por nome ou sabr"
+      [debounce]="400"
+      [value]="busca()"
+      (ionInput)="onBusca($event)">
+    </ion-searchbar>
+
     <!-- Filtro por categoria (US-04 CA#3) -->
     <div class="chips">
       <ion-chip [color]="categoriaSelecionada() === null ? 'primary' : 'medium'"
@@ -62,7 +69,12 @@
             </ion-col>
           } @empty {
             <ion-col size="12" class="vazio">
-              <p>Nenhum cupcake nesta categoria por enquanto. 🧁</p>
+              @if (busca().trim()) {
+                <p>Nenhum cupcake encontrado para "{{ busca() }}". 🔍</p>
+                <p>Tente outro nome ou sabor.</p>
+              }@else {
+                <p>Nenhum cupcake nesta categoria por enquanto. 🧁</p>
+              }
             </ion-col>
           }
         }

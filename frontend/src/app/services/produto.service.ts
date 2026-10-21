@@ -8,10 +8,14 @@ import { CategoriaResponse, ProdutoResponse } from '../models/produto.model';
 export class ProdutoService {
   private http = inject(HttpClient);
 
-  listar(categoriaId?: number | null): Observable<ProdutoResponse[]> {
+
+  listar(categoriaId?: number | null, busca?: string): Observable<ProdutoResponse[]> {
     let params = new HttpParams();
     if (categoriaId) {
       params = params.set('categoriaId', categoriaId);
+    }
+    if (busca?.trim()) {
+      params = params.set('busca', busca.trim());
     }
     return this.http.get<ProdutoResponse[]>(`${environment.apiUrl}/produtos`, { params });
   }
@@ -23,4 +27,5 @@ export class ProdutoService {
   categorias(): Observable<CategoriaResponse[]> {
     return this.http.get<CategoriaResponse[]>(`${environment.apiUrl}/categorias`);
   }
+
 }
