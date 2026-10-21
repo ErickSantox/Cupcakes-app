@@ -17,9 +17,9 @@ public interface ProdutoRepository extends JpaRepository<Produto,Long> {
         SELECT p FROM Produto p
         WHERE p.ativo = true
                 AND (:categoriaId IS NULL OR p.categoria.id = :categoriaId)
-                AND(:busca IS NULL OR LOWER(p.nome)              LIKE
-            LOWER(CONCAT('%',:busca, '%')) OR LOWER(p.descricao) LIKE
-            LOWER(CONCAT('%', :busca, '%')))
+                AND (:busca IS NULL
+                     OR LOWER(p.nome)      LIKE LOWER(CONCAT('%', CAST(:busca AS String), '%'))
+                     OR LOWER(p.descricao) LIKE LOWER(CONCAT('%', CAST(:busca AS String), '%')))
                     ORDER BY p.nome
         """)
     List<Produto> buscarVitrine(@Param("categoriaId") Long categoriaId, @Param("busca") String busca);
