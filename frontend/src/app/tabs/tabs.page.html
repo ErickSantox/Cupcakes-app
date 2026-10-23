@@ -7,6 +7,9 @@
     <ion-tab-button tab="carrinho" href="/tabs/carrinho">
       <ion-icon aria-hidden="true" name="cart-outline"></ion-icon>
       <ion-label>Carrinho</ion-label>
+      @if (carrinho.quantidadeTotal() > 0) {
+        <ion-badge color="primary">{{ carrinho.quantidadeTotal() }}</ion-badge>
+      }
     </ion-tab-button>
     <ion-tab-button tab="pedidos" href="/tabs/pedidos">
       <ion-icon aria-hidden="true" name="receipt-outline"></ion-icon>

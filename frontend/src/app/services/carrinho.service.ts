@@ -24,7 +24,6 @@ export class CarrinhoService {
     });
   }
 
-  /** Retorna true se a quantidade foi limitada ao máximo (RN#1) */
   adicionar(produto: ProdutoResponse, quantidade = 1): boolean {
     const existente = this._itens().find(i => i.produtoId === produto.id);
     const desejada = (existente?.quantidade ?? 0) + quantidade;

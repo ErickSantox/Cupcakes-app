@@ -22,9 +22,36 @@
           <ion-badge color="medium">Esgotado</ion-badge>
         }
       </div>
-      <!-- Quantidade e "Adicionar ao carrinho" entram na US-06 -->
+
+
     </div>
   } @else {
     <div class="carregando"><ion-spinner name="crescent"></ion-spinner></div>
   }
 </ion-content>
+
+@if (produto(); as p) {
+  <ion-footer class="ion-padding">
+    @if (p.disponivel) {
+      <div class="compra">
+        <div class="seletor">
+          <ion-button fill="outline" size="small" [disabled]="quantidade() <= 1"
+                      (click)="mudarQuantidade(-1)" aria-label="Diminuir">
+            <ion-icon slot="icon-only" name="remove"></ion-icon>
+          </ion-button>
+          <span class="qtd">{{ quantidade() }}</span>
+          <ion-button fill="outline" size="small" [disabled]="quantidade() >= maximo()"
+                      (click)="mudarQuantidade(1)" aria-label="Aumentar">
+            <ion-icon slot="icon-only" name="add"></ion-icon>
+          </ion-button>
+        </div>
+        <ion-button expand="block" class="adicionar" (click)="adicionar()">
+          <ion-icon slot="start" name="cart-outline"></ion-icon>
+          Adicionar · {{ p.preco * quantidade() | currency: 'BRL' }}
+        </ion-button>
+      </div>
+    } @else {
+      <ion-button expand="block" disabled>Esgotado</ion-button>
+    }
+  </ion-footer>
+}
