@@ -1,13 +1,64 @@
-<ion-header [translucent]="true">
+<ion-header>
   <ion-toolbar>
-    <ion-title>carrinho</ion-title>
+    <ion-title>Carrinho</ion-title>
   </ion-toolbar>
 </ion-header>
 
-<ion-content [fullscreen]="true">
-  <ion-header collapse="condense">
-    <ion-toolbar>
-      <ion-title size="large">carrinho</ion-title>
-    </ion-toolbar>
-  </ion-header>
+<ion-content>
+  <div class="container">
+    @if (carrinho.itens().length === 0) {
+      <!-- RN#1: carrinho vazio com mensagem orientativa -->
+      <div class="vazio">
+        <ion-icon name="cart-outline"></ion-icon>
+        <h2>Seu carrinho está vazio</h2>
+        <p>Que tal escolher alguns cupcakes? 🧁</p>
+        <ion-button routerLink="/tabs/vitrine">Ver vitrine</ion-button>
+      </div>
+    } @else {
+      <ion-list>
+        @for (item of carrinho.itens(); track item.produtoId) {
+          <ion-item>
+            <ion-thumbnail slot="start">
+              <ion-img [src]="fotoDe(item)" [alt]="item.nome" (ionError)="fotoPadrao($event)"></ion-img>
+            </ion-thumbnail>
+
+            <ion-label>
+              <h3>{{ item.nome }}</h3>
+              <p>{{ item.preco | currency: 'BRL' }} cada</p>
+              <p class="subtotal">{{ item.preco * item.quantidade | currency: 'BRL' }}</p>
+            </ion-label>
+
+            <div class="seletor" slot="end">
+              <ion-button fill="clear" size="small" (click)="mudarQuantidade(item, -1)"
+                          [attr.aria-label]="item.quantidade === 1 ? 'Remover' : 'Diminuir'">
+                <ion-icon slot="icon-only" [name]="item.quantidade === 1 ? 'trash-outline' : 'remove'"></ion-icon>
+              </ion-button>
+              <span class="qtd">{{ item.quantidade }}</span>
+              <ion-button fill="clear" size="small" [disabled]="item.quantidade >= maximo"
+                          (click)="mudarQuantidade(item, 1)" aria-label="Aumentar">
+                <ion-icon slot="icon-only" name="add"></ion-icon>
+              </ion-button>
+              <ion-button fill="clear" size="small" color="danger" (click)="remover(item)" aria-label="Remover item">
+                <ion-icon slot="icon-only" name="trash-outline"></ion-icon>
+              </ion-button>
+            </div>
+          </ion-item>
+        }
+      </ion-list>
+    }
+  </div>
 </ion-content>
+
+@if (carrinho.itens().length > 0) {
+  <ion-footer class="ion-padding">
+    <div class="resumo">
+      <div>
+        <span class="rotulo">Total ({{ carrinho.quantidadeTotal() }} itens)</span>
+        <strong class="total">{{ carrinho.total() | currency: 'BRL' }}</strong>
+        <small>Frete calculado no checkout</small>
+      </div>
+      <!-- US-08: vai levar para o checkout -->
+      <ion-button disabled>Finalizar pedido</ion-button>
+    </div>
+  </ion-footer>
+}
