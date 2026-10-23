@@ -29,9 +29,9 @@
             </ion-label>
 
             <div class="seletor" slot="end">
-              <ion-button fill="clear" size="small" (click)="mudarQuantidade(item, -1)"
-                          [attr.aria-label]="item.quantidade === 1 ? 'Remover' : 'Diminuir'">
-                <ion-icon slot="icon-only" [name]="item.quantidade === 1 ? 'trash-outline' : 'remove'"></ion-icon>
+              <ion-button fill="clear" size="small" [disabled]="item.quantidade <= 1"
+                          (click)="mudarQuantidade(item, -1)" aria-label="Diminuir">
+                <ion-icon slot="icon-only" name="remove"></ion-icon>
               </ion-button>
               <span class="qtd">{{ item.quantidade }}</span>
               <ion-button fill="clear" size="small" [disabled]="item.quantidade >= maximo"

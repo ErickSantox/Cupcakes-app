@@ -30,10 +30,7 @@ export class VitrinePage implements OnInit {
   /** 4 cards "fantasma" para o skeleton enquanto carrega */
   readonly esqueletos = [1, 2, 3, 4];
 
-  ngOnInit() {
-    this.produtoService.categorias().subscribe(c => this.categorias.set(c));
-    this.carregarProdutos();
-  }
+
 
   selecionarCategoria(id: number | null) {
     this.categoriaSelecionada.set(id);
@@ -66,6 +63,11 @@ export class VitrinePage implements OnInit {
 
   onBusca(evento: CustomEvent) {
     this.busca.set(evento.detail.value ?? '');
+    this.carregarProdutos();
+  }
+
+    ngOnInit() {
+    this.produtoService.categorias().subscribe(c => this.categorias.set(c));
     this.carregarProdutos();
   }
 }
