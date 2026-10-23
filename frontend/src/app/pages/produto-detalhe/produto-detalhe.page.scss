@@ -42,3 +42,14 @@
   justify-content: center;
   padding: 48px;
 }
+
+.compra { display: flex; align-items: center; gap: 12px; }
+.seletor { display: flex; align-items: center; gap: 4px; }
+.qtd { min-width: 28px; text-align: center; font-weight: 700; font-size: 1.1rem; }
+.adicionar { flex: 1; }
+
+ion-footer .compra,
+ion-footer > ion-button {
+  max-width: 600px;
+  margin: 0 auto;
+}
