@@ -10,6 +10,7 @@ import { Router } from '@angular/router';
 import { addIcons } from 'ionicons';
 import { add, remove, cartOutline } from 'ionicons/icons';
 import { CarrinhoService, MAX_POR_ITEM } from '../../services/carrinho.service';
+import { urlDaFoto } from '../../utils/foto';
 
 @Component({
   selector: 'app-produto-detalhe',
@@ -68,6 +69,10 @@ export class ProdutoDetalhePage implements OnInit {
     });
     await t.present();
     this.quantidade.set(1);
+  }
+
+    fotoDe(p: ProdutoResponse): string {
+    return urlDaFoto(p.fotoUrl);
   }
 
   fotoPadrao(evento: Event) {

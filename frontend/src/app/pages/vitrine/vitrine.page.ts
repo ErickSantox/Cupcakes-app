@@ -5,6 +5,7 @@ import { IonContent, IonHeader, IonTitle, IonToolbar, IonChip, IonLabel, IonGrid
 import { ProdutoService } from '../../services/produto.service';
 import { CategoriaResponse, ProdutoResponse } from '../../models/produto.model';
 import { Subscription } from 'rxjs';
+import { urlDaFoto } from '../../utils/foto';
 
 @Component({
   selector: 'app-vitrine',
@@ -51,8 +52,8 @@ export class VitrinePage implements OnInit {
   }
 
   /** O seed grava "/img/produtos/x.jpg"; no app, as imagens ficam em "assets/img/produtos/x.jpg" */
-  fotoDe(p: ProdutoResponse): string {
-    return `assets${p.fotoUrl}`;
+    fotoDe(p: ProdutoResponse): string {
+    return urlDaFoto(p.fotoUrl);
   }
 
   fotoPadrao(evento: Event) {

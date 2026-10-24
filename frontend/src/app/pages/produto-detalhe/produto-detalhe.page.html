@@ -9,7 +9,7 @@
 
 <ion-content>
   @if (produto(); as p) {
-    <ion-img class="foto" [src]="'assets' + p.fotoUrl" [alt]="p.nome" (ionError)="fotoPadrao($event)"></ion-img>
+    <ion-img class="foto" [src]="fotoDe(p)" [alt]="p.nome" (ionError)="fotoPadrao($event)"></ion-img>
     <div class="ion-padding">
       <h1>{{ p.nome }}</h1>
       <p>{{ p.descricao }}</p>
