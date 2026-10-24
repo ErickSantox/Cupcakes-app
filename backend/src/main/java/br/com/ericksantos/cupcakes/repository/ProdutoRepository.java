@@ -26,4 +26,7 @@ public interface ProdutoRepository extends JpaRepository<Produto,Long> {
 
     @EntityGraph(attributePaths = "categoria")
     Optional<Produto> findByIdAndAtivoTrue(Long id);
+
+    @EntityGraph(attributePaths = "categoria")
+    List<Produto> findAllByOrderByNomeAsc();
 }
