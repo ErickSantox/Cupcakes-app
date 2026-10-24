@@ -9,6 +9,8 @@ import { addIcons } from 'ionicons';
 import { add, remove, trashOutline, cartOutline } from 'ionicons/icons';
 import { CarrinhoService, MAX_POR_ITEM } from '../../services/carrinho.service';
 import { ItemCarrinho } from '../../models/carrinho.model';
+import { urlDaFoto } from '../../utils/foto';
+import { ProdutoResponse } from '../../models/produto.model';
 
 @Component({
   selector: 'app-carrinho',
@@ -48,8 +50,8 @@ export class CarrinhoPage {
     await t.present();
   }
 
-  fotoDe(item: ItemCarrinho): string {
-    return `assets${item.fotoUrl}`;
+    fotoDe(item: ItemCarrinho): string {
+    return urlDaFoto(item.fotoUrl);
   }
 
   fotoPadrao(evento: Event) {
