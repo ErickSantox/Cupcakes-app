@@ -16,6 +16,9 @@
     @if (sessao.logado()) {
       <h2>Olá, {{ sessao.usuario()?.nome }}!</h2>
       <p>{{ sessao.usuario()?.email }}</p>
+            @if (sessao.usuario()?.perfil === 'ADMIN') {
+        <ion-button expand="block" color="secondary" routerLink="/admin/produtos">Área do administrador</ion-button>
+      }
       <ion-button expand="block" fill="outline" color="medium" (click)="sair()">Sair</ion-button>
     } @else {
       <p>Entre para fazer pedidos e acompanhar suas entregas.</p>

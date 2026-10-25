@@ -1,0 +1,88 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-back-button defaultHref="/tabs/conta"></ion-back-button>
+    </ion-buttons>
+    <ion-title>Produtos (admin)</ion-title>
+    <ion-buttons slot="end">
+      <ion-button (click)="novo()">
+        <ion-icon slot="start" name="add"></ion-icon>
+        Novo
+      </ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <div class="container">
+    <ion-list>
+      @for (p of produtos(); track p.id) {
+        <ion-item [class.inativo]="!p.ativo">
+          <ion-thumbnail slot="start">
+            <ion-img [src]="urlDaFoto(p.fotoUrl)" [alt]="p.nome" (ionError)="fotoPadrao($event)"></ion-img>
+          </ion-thumbnail>
+          <ion-label>
+            <h3>{{ p.nome }}</h3>
+            <p>{{ p.categoriaNome }} · {{ p.preco | currency: 'BRL' }} · estoque {{ p.estoque }}</p>
+          </ion-label>
+          <ion-toggle slot="end" [checked]="p.ativo"
+                      (ionChange)="alternarAtivo(p, $event.detail.checked)"
+                      [attr.aria-label]="'Produto ativo: ' + p.nome"></ion-toggle>
+          <ion-button slot="end" fill="clear" (click)="editar(p)" aria-label="Editar">
+            <ion-icon slot="icon-only" name="create-outline"></ion-icon>
+          </ion-button>
+        </ion-item>
+      } @empty {
+        <p class="vazio">Nenhum produto cadastrado.</p>
+      }
+    </ion-list>
+  </div>
+
+  <ion-modal [isOpen]="modalAberto()" (didDismiss)="modalAberto.set(false)">
+    <ng-template>
+      <ion-header>
+        <ion-toolbar>
+          <ion-title>{{ editandoId() ? 'Editar produto' : 'Novo produto' }}</ion-title>
+          <ion-buttons slot="end">
+            <ion-button (click)="modalAberto.set(false)">Cancelar</ion-button>
+          </ion-buttons>
+        </ion-toolbar>
+      </ion-header>
+
+      <ion-content class="ion-padding">
+        <form [formGroup]="form" (ngSubmit)="salvar()">
+          <ion-input label="Nome" labelPlacement="stacked" formControlName="nome" [counter]="true" maxlength="100"
+                     errorText="Informe o nome."></ion-input>
+
+          <ion-textarea label="Descrição" labelPlacement="stacked" formControlName="descricao" [autoGrow]="true"
+                        [counter]="true" maxlength="200" errorText="Informe a descrição."></ion-textarea>
+
+          <ion-input label="Preço (R$)" labelPlacement="stacked" type="number" step="0.01" formControlName="preco"
+                     errorText="O preço deve ser maior que zero."></ion-input>
+
+          <ion-select label="Categoria" labelPlacement="stacked" formControlName="categoriaId" interface="popover">
+            @for (c of categorias(); track c.id) {
+              <ion-select-option [value]="c.id">{{ c.nome }}</ion-select-option>
+            }
+          </ion-select>
+          @if (form.controls.categoriaId.touched && form.controls.categoriaId.invalid) {
+            <ion-note color="danger">Escolha a categoria.</ion-note>
+          }
+
+          <ion-input label="URL da foto" labelPlacement="stacked" type="url" formControlName="fotoUrl"
+                     placeholder="https://..." errorText="A foto é obrigatória."></ion-input>
+          @if (form.controls.fotoUrl.value) {
+            <img class="previa" [src]="urlDaFoto(form.controls.fotoUrl.value)" alt="Prévia da foto" />
+          }
+
+          <ion-input label="Estoque" labelPlacement="stacked" type="number" formControlName="estoque"
+                     errorText="O estoque não pode ser negativo."></ion-input>
+
+          <ion-button type="submit" expand="block" [disabled]="salvando()">
+            {{ salvando() ? 'Salvando...' : 'Salvar' }}
+          </ion-button>
+        </form>
+      </ion-content>
+    </ng-template>
+  </ion-modal>
+</ion-content>
