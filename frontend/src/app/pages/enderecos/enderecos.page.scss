@@ -1,0 +1,13 @@
+.container { max-width: 700px; margin: 0 auto; padding: 8px 16px; }
+.centro { display: flex; justify-content: center; padding: 48px; }
+.topo { display: flex; justify-content: space-between; align-items: center; gap: 8px; }
+.acoes { display: flex; flex-wrap: wrap; margin-top: 8px; }
+ion-card.padrao { border: 2px solid var(--ion-color-primary); }
+.vazio {
+  text-align: center; padding: 48px 16px;
+  ion-icon { font-size: 64px; color: var(--ion-color-tertiary); }
+}
+.limite { display: block; text-align: center; margin-top: 8px; }
+.linha { display: flex; gap: 12px; }
+.uf { max-width: 80px; }
+form > * { margin-bottom: 12px; }

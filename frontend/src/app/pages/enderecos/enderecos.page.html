@@ -1,0 +1,105 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-back-button defaultHref="/tabs/conta"></ion-back-button>
+    </ion-buttons>
+    <ion-title>Meus endereços</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <div class="container">
+    @if (carregando()) {
+      <div class="centro"><ion-spinner name="crescent"></ion-spinner></div>
+    } @else {
+      @for (e of enderecos(); track e.id) {
+        <ion-card [class.padrao]="e.padrao">
+          <ion-card-content>
+            <div class="topo">
+              <strong>{{ e.logradouro }}, {{ e.numero }}</strong>
+              @if (e.padrao) {
+                <ion-badge color="primary">Padrão</ion-badge>
+              }
+            </div>
+            @if (e.complemento) {
+              <p>{{ e.complemento }}</p>
+            }
+            <p>{{ e.bairro }} · {{ e.cidade }}/{{ e.uf }} · CEP {{ formatarCep(e.cep) }}</p>
+
+            <div class="acoes">
+              @if (!e.padrao) {
+                <ion-button fill="clear" size="small" (click)="definirPadrao(e)">
+                  <ion-icon slot="start" name="star-outline"></ion-icon> Tornar padrão
+                </ion-button>
+              }
+              <ion-button fill="clear" size="small" (click)="editar(e)">
+                <ion-icon slot="start" name="create-outline"></ion-icon> Editar
+              </ion-button>
+              <ion-button fill="clear" size="small" color="danger" (click)="excluir(e)">
+                <ion-icon slot="start" name="trash-outline"></ion-icon> Excluir
+              </ion-button>
+            </div>
+          </ion-card-content>
+        </ion-card>
+      } @empty {
+        <div class="vazio">
+          <ion-icon name="location-outline"></ion-icon>
+          <h2>Nenhum endereço cadastrado</h2>
+          <p>Cadastre um endereço para receber seus cupcakes. 🧁</p>
+        </div>
+      }
+
+      <!-- RN#1: no máximo 5 -->
+      <ion-button expand="block" (click)="novo()" [disabled]="enderecos().length >= MAX">
+        <ion-icon slot="start" name="add"></ion-icon> Novo endereço
+      </ion-button>
+      @if (enderecos().length >= MAX) {
+        <ion-note class="limite">Você atingiu o limite de {{ MAX }} endereços. Exclua um para cadastrar outro.</ion-note>
+      }
+    }
+  </div>
+
+  <ion-modal [isOpen]="modalAberto()" (didDismiss)="modalAberto.set(false)">
+    <ng-template>
+      <ion-header>
+        <ion-toolbar>
+          <ion-title>{{ editandoId() ? 'Editar endereço' : 'Novo endereço' }}</ion-title>
+          <ion-buttons slot="end">
+            <ion-button (click)="modalAberto.set(false)">Cancelar</ion-button>
+          </ion-buttons>
+        </ion-toolbar>
+      </ion-header>
+
+      <ion-content class="ion-padding">
+        <form [formGroup]="form" (ngSubmit)="salvar()">
+          <ion-input label="CEP" labelPlacement="stacked" formControlName="cep" inputmode="numeric"
+                     maxlength="9" placeholder="00000-000" (ionInput)="onCep($event)"
+                     errorText="CEP inválido. Use 8 números."></ion-input>
+          @if (buscandoCep()) {
+            <ion-note>Buscando endereço...</ion-note>
+          }
+          @if (avisoCep()) {
+            <ion-note color="warning">{{ avisoCep() }}</ion-note>
+          }
+
+          <ion-input label="Rua" labelPlacement="stacked" formControlName="logradouro" errorText="Informe a rua."></ion-input>
+          <div class="linha">
+            <ion-input label="Número" labelPlacement="stacked" formControlName="numero" errorText="Informe o número."></ion-input>
+            <ion-input label="Complemento" labelPlacement="stacked" formControlName="complemento" placeholder="Opcional"></ion-input>
+          </div>
+          <ion-input label="Bairro" labelPlacement="stacked" formControlName="bairro" errorText="Informe o bairro."></ion-input>
+          <div class="linha">
+            <ion-input label="Cidade" labelPlacement="stacked" formControlName="cidade" errorText="Informe a cidade."></ion-input>
+            <ion-input class="uf" label="UF" labelPlacement="stacked" formControlName="uf" maxlength="2" errorText="UF inválida."></ion-input>
+          </div>
+
+          <ion-checkbox formControlName="padrao" labelPlacement="end">Usar como endereço padrão</ion-checkbox>
+
+          <ion-button type="submit" expand="block" [disabled]="salvando()">
+            {{ salvando() ? 'Salvando...' : 'Salvar' }}
+          </ion-button>
+        </form>
+      </ion-content>
+    </ng-template>
+  </ion-modal>
+</ion-content>
