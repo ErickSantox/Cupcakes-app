@@ -25,7 +25,7 @@ describe('CarrinhoPage', () => {
 
   it('deve listar os itens do carrinho', () => {
     carrinho.adicionar({ id: 1, nome: 'Brigadeiro', descricao: '', preco: 10, fotoUrl: '',
-      estoque: 5, categoriaId: 1, categoriaNome: 'X', disponivel: true }, 2);
+      estoque: 5, categoriaId: 1, categoriaNome: 'X', disponivel: true, ativo: true }, 2);
 
     const tela = renderizar();
     expect(tela.textContent).toContain('Brigadeiro');

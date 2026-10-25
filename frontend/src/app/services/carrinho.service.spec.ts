@@ -6,7 +6,7 @@ const CHAVE = 'cupcakes.carrinho';
 
 const produto = (id: number, preco = 10): ProdutoResponse => ({
   id, nome: `Cupcake ${id}`, descricao: '', preco, fotoUrl: `/img/${id}.jpg`,
-  estoque: 10, categoriaId: 1, categoriaNome: 'Clássicos', disponivel: true,
+  estoque: 10, categoriaId: 1, categoriaNome: 'Clássicos', disponivel: true,ativo: true
 });
 
 describe('CarrinhoService', () => {
