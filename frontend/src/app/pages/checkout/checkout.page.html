@@ -1,0 +1,78 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-back-button defaultHref="/tabs/carrinho"></ion-back-button>
+    </ion-buttons>
+    <ion-title>Finalizar pedido</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <div class="container">
+    @if (carregando()) {
+      <div class="centro"><ion-spinner></ion-spinner></div>
+    } @else {
+      <!-- Endereço de entrega -->
+      <ion-list>
+        <ion-list-header><ion-label>Entregar em</ion-label></ion-list-header>
+
+        @if (enderecos().length === 0) {
+          <div class="aviso">
+            <p>Você ainda não tem endereço cadastrado.</p>
+            <ion-button routerLink="/enderecos" fill="outline">Cadastrar endereço</ion-button>
+          </div>
+        } @else {
+          <ion-radio-group [value]="enderecoId()" (ionChange)="selecionar($event.detail.value)">
+            @for (e of enderecos(); track e.id) {
+              <ion-item>
+                <ion-radio [value]="e.id" justify="start" labelPlacement="end">
+                  <strong>{{ e.logradouro }}, {{ e.numero }}</strong>
+                  <br><small>{{ e.bairro }} · {{ e.cidade }}/{{ e.uf }}</small>
+                </ion-radio>
+              </ion-item>
+            }
+          </ion-radio-group>
+        }
+      </ion-list>
+
+      <!-- Resumo dos itens -->
+      <ion-list>
+        <ion-list-header><ion-label>Itens</ion-label></ion-list-header>
+        @for (item of carrinho.itens(); track item.produtoId) {
+          <ion-item>
+            <ion-label>{{ item.quantidade }}× {{ item.nome }}</ion-label>
+            <ion-note slot="end">{{ item.preco * item.quantidade | currency: 'BRL' }}</ion-note>
+          </ion-item>
+        }
+      </ion-list>
+
+      <!-- Valores -->
+      <div class="valores">
+        <div><span>Subtotal</span><span>{{ carrinho.total() | currency: 'BRL' }}</span></div>
+        <div>
+          <span>Frete</span>
+          @if (frete(); as f) {
+            <span>{{ f.gratis ? 'Grátis 🎉' : (f.valor | currency: 'BRL') }}</span>
+          } @else {
+            <span>—</span>
+          }
+        </div>
+        @if (frete(); as f) {
+          <small>Entrega em até {{ f.prazoDias }} dia(s) útil(eis)</small>
+        }
+      </div>
+    }
+  </div>
+</ion-content>
+
+<ion-footer class="ion-padding">
+  <div class="resumo">
+    <div>
+      <span class="rotulo">Total</span>
+      <strong class="total">{{ total() | currency: 'BRL' }}</strong>
+    </div>
+    <ion-button (click)="confirmar()" [disabled]="!enderecoId() || !frete() || enviando()">
+      @if (enviando()) { <ion-spinner name="crescent"></ion-spinner> } @else { Confirmar pedido }
+    </ion-button>
+  </div>
+</ion-footer>

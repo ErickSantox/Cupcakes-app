@@ -1,0 +1,45 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-title>Pedido</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <div class="container">
+    @if (pedido(); as p) {
+      <div class="sucesso">
+        <ion-icon name="checkmark-circle-outline" color="success"></ion-icon>
+        <h2>Pedido realizado!</h2>
+        <p>Número <strong>{{ p.numero }}</strong></p>
+        <ion-badge color="warning">{{ statusLabel[p.status] }}</ion-badge>
+      </div>
+
+      <ion-list>
+        @for (item of p.itens; track item.produtoId) {
+          <ion-item>
+            <ion-label>{{ item.quantidade }}× {{ item.produtoNome }}</ion-label>
+            <ion-note slot="end">{{ item.subtotal | currency: 'BRL' }}</ion-note>
+          </ion-item>
+        }
+        <ion-item><ion-label>Subtotal</ion-label><ion-note slot="end">{{ p.subtotal | currency: 'BRL' }}</ion-note></ion-item>
+        <ion-item><ion-label>Frete</ion-label><ion-note slot="end">{{ p.frete | currency: 'BRL' }}</ion-note></ion-item>
+        <ion-item><ion-label><strong>Total</strong></ion-label><ion-note slot="end"><strong>{{ p.total | currency: 'BRL' }}</strong></ion-note></ion-item>
+      </ion-list>
+
+      <div class="entrega">
+        <h3>Entrega</h3>
+        <p>
+          {{ p.entregaLogradouro }}, {{ p.entregaNumero }}
+          @if (p.entregaComplemento) { — {{ p.entregaComplemento }} }
+          <br>{{ p.entregaBairro }} · {{ p.entregaCidade }}/{{ p.entregaUf }}
+        </p>
+      </div>
+
+      <ion-button expand="block" routerLink="/tabs/vitrine">Continuar comprando</ion-button>
+    } @else if (erro()) {
+      <div class="sucesso"><p>Pedido não encontrado.</p></div>
+    } @else {
+      <div class="sucesso"><ion-spinner></ion-spinner></div>
+    }
+  </div>
+</ion-content>

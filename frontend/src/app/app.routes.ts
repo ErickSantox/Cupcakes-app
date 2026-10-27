@@ -29,4 +29,14 @@ export const routes: Routes = [
     canActivate: [authGuard],
     loadComponent: () => import('./pages/enderecos/enderecos.page').then(m => m.EnderecosPage),
   },
+  {
+    path: 'checkout',
+    canActivate: [authGuard],
+    loadComponent: () => import('./pages/checkout/checkout.page').then(m => m.CheckoutPage),
+  },
+  {
+    path: 'pedido/:id',
+    canActivate: [authGuard],
+    loadComponent: () => import('./pages/pedido-confirmacao/pedido-confirmacao.page').then(m => m.PedidoConfirmacaoPage),
+  },
 ];

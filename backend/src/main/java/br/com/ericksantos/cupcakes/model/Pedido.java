@@ -13,6 +13,8 @@ import org.hibernate.type.SqlTypes;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Table(name = "pedido")
@@ -28,6 +30,14 @@ public class Pedido {
     @ManyToOne(fetch = FetchType.LAZY,optional = false)
     @JoinColumn(name = "usuario_id")
     private Usuario usuario;
+
+    @OneToMany(mappedBy = "pedido",cascade = CascadeType.ALL,orphanRemoval = true)
+    private List<ItemPedido> itens = new ArrayList<>();
+
+    public void adicionarItem(ItemPedido item){
+        item.setPedido(this);
+        itens.add(item);
+    }
 
     @Column(nullable = false, length = 20, unique = true)
     private String numero;

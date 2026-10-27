@@ -57,8 +57,7 @@
         <strong class="total">{{ carrinho.total() | currency: 'BRL' }}</strong>
         <small>Frete calculado no checkout</small>
       </div>
-      <!-- US-08: vai levar para o checkout -->
-      <ion-button disabled>Finalizar pedido</ion-button>
+      <ion-button routerLink="/checkout">Finalizar pedido</ion-button>
     </div>
   </ion-footer>
 }
