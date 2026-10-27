@@ -1,0 +1,14 @@
+.container { max-width: 720px; margin: 0 auto; }
+.centro { display: flex; justify-content: center; padding: 48px; }
+.aviso { padding: 16px; text-align: center; }
+.valores {
+  padding: 16px;
+  div { display: flex; justify-content: space-between; margin-bottom: 8px; }
+  small { color: var(--ion-color-medium); }
+}
+.resumo {
+  max-width: 720px; margin: 0 auto;
+  display: flex; align-items: center; justify-content: space-between;
+  .rotulo { display: block; font-size: 0.85rem; color: var(--ion-color-medium); }
+  .total { font-size: 1.3rem; }
+}
