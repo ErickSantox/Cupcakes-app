@@ -9,9 +9,9 @@
     @if (pedido(); as p) {
       <div class="sucesso">
         <ion-icon name="checkmark-circle-outline" color="success"></ion-icon>
-        <h2>Pedido realizado!</h2>
+        <h2>{{ p.status === 'PAGO' ? 'Pagamento confirmado!' : 'Pedido realizado!' }}</h2>
         <p>Número <strong>{{ p.numero }}</strong></p>
-        <ion-badge color="warning">{{ statusLabel[p.status] }}</ion-badge>
+        <ion-badge [color]="p.status === 'PAGO' ? 'success' : 'warning'">{{ statusLabel[p.status] }}</ion-badge>
       </div>
 
       <ion-list>
@@ -26,6 +26,55 @@
         <ion-item><ion-label><strong>Total</strong></ion-label><ion-note slot="end"><strong>{{ p.total | currency: 'BRL' }}</strong></ion-note></ion-item>
       </ion-list>
 
+      @if (aguardandoPagamento()) {
+        <form class="pagamento" [formGroup]="form" (ngSubmit)="pagar()">
+          <h3><ion-icon name="card-outline"></ion-icon> Pagamento com cartão</h3>
+
+          <ion-segment formControlName="forma">
+            <ion-segment-button value="CARTAO_CREDITO"><ion-label>Crédito</ion-label></ion-segment-button>
+            <ion-segment-button value="CARTAO_DEBITO"><ion-label>Débito</ion-label></ion-segment-button>
+          </ion-segment>
+
+          <ion-input formControlName="numero" label="Número do cartão" labelPlacement="floating" fill="outline"
+                     inputmode="numeric" autocomplete="cc-number" maxlength="23"
+                     (ionInput)="formatarNumero($event)"
+                     errorText="Informe um número de cartão válido."></ion-input>
+
+          <ion-input formControlName="nomeTitular" label="Nome impresso no cartão" labelPlacement="floating"
+                     fill="outline" autocomplete="cc-name"
+                     errorText="Informe o nome do titular."></ion-input>
+
+          <div class="linha">
+            <ion-input formControlName="validade" label="Validade (MM/AA)" labelPlacement="floating" fill="outline"
+           inputmode="numeric" autocomplete="cc-exp" maxlength="5"
+           (ionInput)="formatarValidade($event)"
+           [errorText]="erroValidade()"></ion-input>
+
+            <ion-input formControlName="cvv" label="CVV" labelPlacement="floating" fill="outline" type="password"
+                       inputmode="numeric" autocomplete="cc-csc" maxlength="3"
+                       errorText="3 dígitos."></ion-input>
+          </div>
+
+          @if (recusa()) {
+            <p class="recusa">❌ {{ recusa() }} Tente outro cartão.</p>
+          }
+
+          <ion-button expand="block" type="submit" [disabled]="pagando()">
+            @if (pagando()) { <ion-spinner name="crescent"></ion-spinner> }
+            @else { Pagar {{ p.total | currency: 'BRL' }} }
+          </ion-button>
+
+          <p class="seguranca">
+            <ion-icon name="lock-closed-outline"></ion-icon>
+            Os dados do cartão não são armazenados. Aceitamos Visa, Mastercard e Elo.
+          </p>
+          <p class="demo">
+            Ambiente de demonstração: use <strong>4111 1111 1111 1111</strong> (aprovado)
+            ou <strong>4000 0000 0000 0002</strong> (recusado).
+          </p>
+        </form>
+      }
+
       <div class="entrega">
         <h3>Entrega</h3>
         <p>
@@ -35,7 +84,7 @@
         </p>
       </div>
 
-      <ion-button expand="block" routerLink="/tabs/vitrine">Continuar comprando</ion-button>
+      <ion-button expand="block" fill="outline" routerLink="/tabs/vitrine">Continuar comprando</ion-button>
     } @else if (erro()) {
       <div class="sucesso"><p>Pedido não encontrado.</p></div>
     } @else {
