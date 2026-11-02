@@ -1,0 +1,65 @@
+<ion-header class="no-print">
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-back-button defaultHref="/admin/pedidos"></ion-back-button>
+    </ion-buttons>
+    <ion-title>Comprovante</ion-title>
+    <ion-buttons slot="end">
+      <ion-button (click)="imprimir()" [disabled]="!pedido()">
+        <ion-icon slot="start" name="print-outline"></ion-icon>
+        Imprimir
+      </ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content class="ion-padding">
+  @if (pedido(); as p) {
+    <div class="comprovante" #recibo>
+      <header>
+        <h1>🧁 Cupcakes</h1>
+        <p>Comprovante de pedido</p>
+      </header>
+
+      <section class="dados">
+        <p><strong>Pedido:</strong> {{ p.numero }}</p>
+        <p><strong>Data:</strong> {{ p.criadoEm | date: 'dd/MM/yyyy HH:mm' }}</p>
+        <p><strong>Status:</strong> {{ STATUS_LABEL[p.status] }}</p>
+      </section>
+
+      <section>
+        <h2>Entrega</h2>
+        <p>
+          {{ p.entregaLogradouro }}, {{ p.entregaNumero }}
+          @if (p.entregaComplemento) { · {{ p.entregaComplemento }} }
+        </p>
+        <p>{{ p.entregaBairro }} · {{ p.entregaCidade }}/{{ p.entregaUf }} · CEP {{ p.entregaCep }}</p>
+      </section>
+
+      <section>
+        <h2>Itens</h2>
+        <table>
+          <thead>
+            <tr><th>Produto</th><th>Qtd</th><th>Unitário</th><th>Subtotal</th></tr>
+          </thead>
+          <tbody>
+            @for (i of p.itens; track i.produtoId) {
+              <tr>
+                <td>{{ i.produtoNome }}</td>
+                <td>{{ i.quantidade }}</td>
+                <td>{{ i.precoUnitario | currency: 'BRL' }}</td>
+                <td>{{ i.subtotal | currency: 'BRL' }}</td>
+              </tr>
+            }
+          </tbody>
+        </table>
+      </section>
+
+      <section class="totais">
+        <p>Subtotal: {{ p.subtotal | currency: 'BRL' }}</p>
+        <p>Frete: {{ p.frete | currency: 'BRL' }}</p>
+        <p class="total">Total: {{ p.total | currency: 'BRL' }}</p>
+      </section>
+    </div>
+  }
+</ion-content>

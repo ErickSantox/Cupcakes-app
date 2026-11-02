@@ -1,0 +1,16 @@
+.comprovante {
+  max-width: 640px;
+  margin: 0 auto;
+  font-size: 14px;
+
+  header { text-align: center; border-bottom: 1px dashed #999; margin-bottom: 12px; }
+  h1 { margin: 0; }
+  h2 { font-size: 16px; margin: 16px 0 4px; }
+  p { margin: 2px 0; }
+
+  table { width: 100%; border-collapse: collapse; }
+  th, td { text-align: left; padding: 4px; border-bottom: 1px solid #ddd; }
+
+  .totais { text-align: right; margin-top: 12px; }
+  .total { font-size: 18px; font-weight: bold; }
+}

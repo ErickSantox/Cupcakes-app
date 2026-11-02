@@ -1,0 +1,71 @@
+.container {
+  max-width: 860px;
+  margin: 0 auto;
+}
+
+.filtros-card {
+  margin: 0 0 16px;
+}
+
+.filtros {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  align-items: center;
+  justify-content: center;
+
+  .campo-status { width: 220px; }
+  .campo-data   { width: 170px; }
+
+  .botoes {
+    display: flex;
+    gap: 4px;
+  }
+}
+
+.aviso {
+  display: block;
+  text-align: center;
+  margin-top: 8px;
+}
+
+.vazio {
+  text-align: center;
+  color: var(--ion-color-medium);
+}
+
+.pedido {
+  margin: 0 0 12px;
+
+  .topo {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 8px;
+  }
+
+  ion-card-title { font-size: 18px; }
+  p { margin: 2px 0; }
+}
+
+.acoes {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+  margin-top: 10px;
+}
+
+.paginacao {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+}
+
+/* celular: cada filtro ocupa a linha inteira */
+@media (max-width: 576px) {
+  .filtros {
+    .campo-status, .campo-data { width: 100%; }
+    .botoes { width: 100%; justify-content: center; }
+  }
+}
