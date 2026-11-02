@@ -18,4 +18,6 @@ export interface PagamentoResponse {
   ultimosDigitos: string | null;
   motivo: string | null;
   criadoEm: string;
+  pixCopiaCola: string | null;
+  pixExpiraEm: string | null;
 }

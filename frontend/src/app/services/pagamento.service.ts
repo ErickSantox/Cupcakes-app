@@ -11,4 +11,13 @@ export class PagamentoService {
   pagarComCartao(pedidoId: number, req: PagamentoCartaoRequest): Observable<PagamentoResponse> {
     return this.http.post<PagamentoResponse>(`${environment.apiUrl}/pedidos/${pedidoId}/pagamento/cartao`, req);
   }
+
+  gerarPix(pedidoId: number): Observable<PagamentoResponse> {
+    return this.http.post<PagamentoResponse>(`${environment.apiUrl}/pedidos/${pedidoId}/pagamento/pix`, {});
+  }
+
+  /** SIMULAÇÃO: faz o papel do banco confirmando o pagamento */
+  confirmarPix(pedidoId: number): Observable<PagamentoResponse> {
+    return this.http.post<PagamentoResponse>(`${environment.apiUrl}/pedidos/${pedidoId}/pagamento/pix/confirmar`, {});
+  }
 }
