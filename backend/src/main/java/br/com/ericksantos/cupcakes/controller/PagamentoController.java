@@ -22,4 +22,15 @@ public class PagamentoController {
         PagamentoResponse cartao = pagamentoService.pagarComCartao(jwt.getSubject(),pedidoId,req);
         return ResponseEntity.ok(cartao);
     }
+
+    @PostMapping("/pix")
+    public PagamentoResponse gerarPix(@AuthenticationPrincipal Jwt jwt, @PathVariable Long pedidoId) {
+        return pagamentoService.pagarComPix(jwt.getSubject(), pedidoId);
+    }
+
+    /** SIMULAÇÃO do aviso do banco (na vida real: webhook do PSP) */
+    @PostMapping("/pix/confirmar")
+    public PagamentoResponse confirmarPix(@AuthenticationPrincipal Jwt jwt, @PathVariable Long pedidoId) {
+        return pagamentoService.confirmarPix(jwt.getSubject(), pedidoId);
+    }
 }

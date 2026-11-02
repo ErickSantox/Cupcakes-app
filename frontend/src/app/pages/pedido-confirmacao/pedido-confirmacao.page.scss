@@ -10,11 +10,35 @@
   margin: 16px 0; padding: 16px;
   border: 1px solid var(--ion-color-light-shade); border-radius: 12px;
 
-  h3 { display: flex; align-items: center; gap: 8px; margin: 0; }
-  .linha { display: flex; gap: 12px; ion-input { flex: 1; } }
+  h3 { margin: 0; }
   .recusa { color: var(--ion-color-danger); margin: 0; }
-  .seguranca, .demo {
+  .nota {
     font-size: 0.8rem; color: var(--ion-color-medium); margin: 0;
     display: flex; align-items: center; gap: 6px; flex-wrap: wrap;
+  }
+}
+
+.cartao, .pix { display: flex; flex-direction: column; gap: 12px; }
+.cartao .linha { display: flex; gap: 12px; ion-input { flex: 1; } }
+
+.pix {
+  p { margin: 0; }
+  .contagem { display: flex; align-items: center; gap: 6px; font-size: 1.1rem; }
+  .rotulo { font-size: 0.85rem; color: var(--ion-color-medium); }
+    .copia-cola {
+    width: 100%; resize: none; padding: 12px;
+    font-family: monospace; font-size: 0.85rem; word-break: break-all;
+    border: 1px dashed var(--ion-color-medium); border-radius: 8px;
+    background: var(--ion-color-light); color: var(--ion-text-color);
+  }
+  .qr {
+    align-self: center;
+    border: 8px solid #fff; border-radius: 8px;   // borda branca: leitores de QR precisam de contraste
+  }
+  .centro { text-align: center; }
+  .demo {
+    padding: 12px; border-radius: 8px; background: var(--ion-color-light);
+    display: flex; flex-direction: column; gap: 8px;
+    p { font-size: 0.85rem; color: var(--ion-color-medium); }
   }
 }

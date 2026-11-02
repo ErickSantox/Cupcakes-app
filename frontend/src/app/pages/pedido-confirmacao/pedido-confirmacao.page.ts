@@ -1,4 +1,4 @@
-import { Component, OnInit, computed, inject, signal } from '@angular/core';
+import { Component, DestroyRef, OnInit, computed, inject, signal } from '@angular/core';
 import { CurrencyPipe } from '@angular/common';
 import { HttpErrorResponse } from '@angular/common/http';
 import { ActivatedRoute, RouterLink } from '@angular/router';
@@ -9,11 +9,14 @@ import {
   ToastController,
 } from '@ionic/angular';
 import { addIcons } from 'ionicons';
-import { checkmarkCircleOutline, cardOutline, lockClosedOutline } from 'ionicons/icons';
+import {
+  checkmarkCircleOutline, cardOutline, lockClosedOutline, qrCodeOutline, copyOutline, timeOutline,
+} from 'ionicons/icons';
 import { PedidoService } from '../../services/pedido.service';
 import { PagamentoService } from '../../services/pagamento.service';
 import { PedidoResponse, STATUS_LABEL } from '../../models/pedido.model';
-import { FormaCartao } from '../../models/pagamento.model';
+import { FormaCartao, PagamentoResponse } from '../../models/pagamento.model';
+import { toDataURL } from 'qrcode';
 
 /** Vencido ou distante demais (mesma regra do back: até 20 anos à frente) */
 function validadeCartao(control: AbstractControl): ValidationErrors | null {
@@ -47,15 +50,18 @@ export class PedidoConfirmacaoPage implements OnInit {
   private pagamentoService = inject(PagamentoService);
   private toast = inject(ToastController);
   private fb = inject(FormBuilder);
-
+  private destroyRef = inject(DestroyRef);
+  qrCode = signal<string | null>(null);
   readonly statusLabel = STATUS_LABEL;
   pedido = signal<PedidoResponse | null>(null);
   erro = signal(false);
 
+  aguardandoPagamento = computed(() => this.pedido()?.status === 'AGUARDANDO_PAGAMENTO');
+  modo = signal<'cartao' | 'pix'>('cartao');
+
+  // ---------- cartão (US-09) ----------
   pagando = signal(false);
   recusa = signal<string | null>(null);
-
-  aguardandoPagamento = computed(() => this.pedido()?.status === 'AGUARDANDO_PAGAMENTO');
 
   form = this.fb.nonNullable.group({
     forma: ['CARTAO_CREDITO' as FormaCartao, Validators.required],
@@ -65,8 +71,33 @@ export class PedidoConfirmacaoPage implements OnInit {
     cvv: ['', [Validators.required, Validators.pattern(/^\d{3}$/)]],
   });
 
+  // ---------- PIX (US-10) ----------
+  pix = signal<PagamentoResponse | null>(null);
+  gerandoPix = signal(false);
+  confirmandoPix = signal(false);
+
+  /** "Relógio" da tela: atualizado a cada segundo enquanto há um PIX na tela */
+  private agora = signal(Date.now());
+  private timer?: ReturnType<typeof setInterval>;
+
+  segundosRestantes = computed(() => {
+    const expiraEm = this.pix()?.pixExpiraEm;
+    if (!expiraEm) return 0;
+    return Math.max(0, Math.floor((new Date(expiraEm).getTime() - this.agora()) / 1000));
+  });
+
+  pixExpirado = computed(() => this.pix() !== null && this.segundosRestantes() === 0);
+
+  /** 1785 → "29:45" */
+  contagem = computed(() => {
+    const s = this.segundosRestantes();
+    return `${String(Math.floor(s / 60)).padStart(2, '0')}:${String(s % 60).padStart(2, '0')}`;
+  });
+
   constructor() {
-    addIcons({ checkmarkCircleOutline, cardOutline, lockClosedOutline });
+    addIcons({ checkmarkCircleOutline, cardOutline, lockClosedOutline, qrCodeOutline, copyOutline, timeOutline });
+    // Sem isso, o setInterval continuaria rodando depois de sair da tela (vazamento de memória)
+    this.destroyRef.onDestroy(() => this.pararRelogio());
   }
 
   ngOnInit() {
@@ -76,6 +107,12 @@ export class PedidoConfirmacaoPage implements OnInit {
       error: () => this.erro.set(true),
     });
   }
+
+  trocarModo(evento: CustomEvent) {
+    this.modo.set(evento.detail.value);
+  }
+
+  // ---------- cartão ----------
 
   /** Máscara: "4111111111111111" → "4111 1111 1111 1111" */
   formatarNumero(evento: CustomEvent) {
@@ -87,6 +124,13 @@ export class PedidoConfirmacaoPage implements OnInit {
   formatarValidade(evento: CustomEvent) {
     const digitos = String(evento.detail.value ?? '').replace(/\D/g, '').slice(0, 4);
     this.form.controls.validade.setValue(digitos.length > 2 ? `${digitos.slice(0, 2)}/${digitos.slice(2)}` : digitos);
+  }
+
+  erroValidade(): string {
+    const erros = this.form.controls.validade.errors;
+    if (erros?.['vencido']) return 'Cartão vencido.';
+    if (erros?.['distante']) return 'Validade inválida.';
+    return 'Use MM/AA.';
   }
 
   pagar() {
@@ -105,8 +149,7 @@ export class PedidoConfirmacaoPage implements OnInit {
         this.pagando.set(false);
         if (r.status === 'APROVADO') {
           this.form.reset();   // CA#3: dados do cartão não ficam na tela
-          this.pedido.set({ ...p, status: 'PAGO' });
-          this.avisar(`Pagamento aprovado no ${r.bandeira} final ${r.ultimosDigitos}! 🎉`, 'success');
+          this.marcarComoPago(`Pagamento aprovado no ${r.bandeira} final ${r.ultimosDigitos}! 🎉`);
         } else {
           // Recusa não é erro: mostra o motivo e deixa tentar outro cartão
           this.recusa.set(r.motivo ?? 'Pagamento recusado.');
@@ -120,15 +163,85 @@ export class PedidoConfirmacaoPage implements OnInit {
     });
   }
 
+  // ---------- PIX ----------
+
+  gerarPix() {
+    const p = this.pedido();
+    if (!p || this.gerandoPix()) return;
+
+    this.gerandoPix.set(true);
+    this.pagamentoService.gerarPix(p.id).subscribe({
+      next: r => {
+        this.gerandoPix.set(false);
+        this.pix.set(r);
+        this.desenharQrCode(r.pixCopiaCola);
+        this.iniciarRelogio();
+      },
+      error: (err: HttpErrorResponse) => {
+        this.gerandoPix.set(false);
+        this.avisar(err.error?.mensagem ?? 'Não foi possível gerar o PIX.', 'danger');
+      },
+    });
+  }
+
+  async copiarPix() {
+    const codigo = this.pix()?.pixCopiaCola;
+    if (!codigo) return;
+    try {
+      await navigator.clipboard.writeText(codigo);
+      this.avisar('Código PIX copiado!', 'success');
+    } catch {
+      this.avisar('Não foi possível copiar. Selecione o código e copie manualmente.', 'danger');
+    }
+  }
+
+  /** Desenha o "copia e cola" como imagem (data URL), sem chamar nenhum servidor */
+  private async desenharQrCode(codigo: string | null) {
+    this.qrCode.set(codigo ? await toDataURL(codigo, { width: 220, margin: 1 }) : null);
+  }
+
+  /** SIMULAÇÃO: na vida real, quem avisa a loja é o banco (webhook) */
+  confirmarPix() {
+    const p = this.pedido();
+    if (!p || this.confirmandoPix()) return;
+
+    this.confirmandoPix.set(true);
+    this.pagamentoService.confirmarPix(p.id).subscribe({
+      next: () => {
+        this.confirmandoPix.set(false);
+        this.marcarComoPago('Pagamento via PIX confirmado! 🎉');
+      },
+      error: (err: HttpErrorResponse) => {
+        this.confirmandoPix.set(false);
+        this.avisar(err.error?.mensagem ?? 'Não foi possível confirmar o PIX.', 'danger');
+      },
+    });
+  }
+
+  // ---------- comum ----------
+
+  private marcarComoPago(mensagem: string) {
+    const p = this.pedido();
+    if (p) this.pedido.set({ ...p, status: 'PAGO' });
+    this.pix.set(null);
+    this.qrCode.set(null);
+    this.pararRelogio();
+    this.avisar(mensagem, 'success');
+  }
+
+  private iniciarRelogio() {
+    this.pararRelogio();
+    this.agora.set(Date.now());
+    this.timer = setInterval(() => this.agora.set(Date.now()), 1000);
+  }
+
+  private pararRelogio() {
+    if (this.timer) clearInterval(this.timer);
+    this.timer = undefined;
+  }
+
   private async avisar(mensagem: string, cor: 'success' | 'danger') {
     const t = await this.toast.create({ message: mensagem, duration: 4000, position: 'top', color: cor });
     await t.present();
   }
-  
-  erroValidade(): string {
-  const erros = this.form.controls.validade.errors;
-  if (erros?.['vencido']) return 'Cartão vencido.';
-  if (erros?.['distante']) return 'Validade inválida.';
-  return 'Use MM/AA.';
-}
 }
