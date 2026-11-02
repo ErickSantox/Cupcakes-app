@@ -20,7 +20,8 @@
     <ion-button expand="block" fill="outline" routerLink="/enderecos">Meus endereços</ion-button>
 
     @if (sessao.usuario()?.perfil === 'ADMIN') {
-    <ion-button expand="block" color="secondary" routerLink="/admin/produtos">Área do administrador</ion-button>
+      <ion-button expand="block" color="secondary" routerLink="/admin/produtos">Área do administrador</ion-button>
+      <ion-button expand="block" color="secondary" fill="outline" routerLink="/admin/pedidos">Gerenciar pedidos</ion-button>
     }
     <ion-button expand="block" fill="outline" color="medium" (click)="sair()">Sair</ion-button>
     } @else {

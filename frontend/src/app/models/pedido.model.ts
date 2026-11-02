@@ -52,3 +52,18 @@ export interface FreteResponse {
   prazoDias: number;
   gratis: boolean;
 }
+
+/** Formato do PagedModel do Spring */
+export interface Pagina<T> {
+  content: T[];
+  page: { size: number; number: number; totalElements: number; totalPages: number };
+}
+
+/** Próximo passo do fluxo que o ADMIN pode dar (espelha StatusPedido.podeIrPara, sem o PAGO) */
+export const PROXIMO_STATUS: Partial<Record<StatusPedido, StatusPedido>> = {
+  PAGO: 'EM_PREPARO',
+  EM_PREPARO: 'SAIU_PARA_ENTREGA',
+  SAIU_PARA_ENTREGA: 'ENTREGUE',
+};
+
+export const PODE_CANCELAR: StatusPedido[] = ['AGUARDANDO_PAGAMENTO', 'PAGO', 'EM_PREPARO'];

@@ -24,6 +24,17 @@ export const routes: Routes = [
     canActivate: [adminGuard],
     loadComponent: () => import('./pages/admin-produtos/admin-produtos.page').then(m => m.AdminProdutosPage),
   },
+  {
+    path: 'admin/pedidos',
+    canActivate: [adminGuard],
+    loadComponent: () => import('./pages/admin-pedidos/admin-pedidos.page').then(m => m.AdminPedidosPage),
+  },
+  {
+    path: 'admin/pedidos/:id/comprovante',
+    canActivate: [adminGuard],
+    loadComponent: () => import('./pages/comprovante/comprovante.page').then(m => m.ComprovantePage),
+  },
+
     {
     path: 'enderecos',
     canActivate: [authGuard],

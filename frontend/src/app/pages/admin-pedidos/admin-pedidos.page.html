@@ -1,0 +1,88 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-back-button defaultHref="/tabs/conta"></ion-back-button>
+    </ion-buttons>
+    <ion-title>Gerenciar pedidos</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content class="ion-padding">
+  <div class="container">
+    <ion-card class="filtros-card">
+      <ion-card-content>
+        <form [formGroup]="filtros" (ngSubmit)="buscar(0)" class="filtros">
+          <ion-select class="campo-status" label="Status" labelPlacement="floating" fill="outline"
+                      formControlName="status" interface="popover">
+            <ion-select-option value="">Todos</ion-select-option>
+            @for (s of statusLista; track s) {
+              <ion-select-option [value]="s">{{ STATUS_LABEL[s] }}</ion-select-option>
+            }
+          </ion-select>
+
+          <ion-input class="campo-data" type="date" label="De" labelPlacement="floating" fill="outline"
+                     formControlName="de"></ion-input>
+          <ion-input class="campo-data" type="date" label="Até" labelPlacement="floating" fill="outline"
+                     formControlName="ate"></ion-input>
+
+          <div class="botoes">
+            <ion-button type="submit" [disabled]="datasInvalidas()">Filtrar</ion-button>
+            <ion-button fill="clear" color="medium" (click)="limpar()">Limpar</ion-button>
+          </div>
+        </form>
+
+        @if (datasInvalidas()) {
+          <ion-note color="danger" class="aviso">A data inicial não pode ser posterior à data final.</ion-note>
+        }
+      </ion-card-content>
+    </ion-card>
+
+    @if (pedidos().length === 0) {
+      <p class="vazio">Nenhum pedido encontrado.</p>
+    }
+
+    @for (p of pedidos(); track p.id) {
+      <ion-card class="pedido">
+        <ion-card-header>
+          <div class="topo">
+            <div>
+              <ion-card-subtitle>{{ p.criadoEm | date: 'dd/MM/yyyy HH:mm' }}</ion-card-subtitle>
+              <ion-card-title>{{ p.numero }}</ion-card-title>
+            </div>
+            <ion-badge [color]="corDoStatus(p.status)">{{ STATUS_LABEL[p.status] }}</ion-badge>
+          </div>
+        </ion-card-header>
+
+        <ion-card-content>
+          <p>{{ p.itens.length }} item(ns) · <strong>{{ p.total | currency: 'BRL' }}</strong></p>
+          <p>{{ p.entregaBairro }} · {{ p.entregaCidade }}/{{ p.entregaUf }}</p>
+
+          <div class="acoes">
+            @if (proximo(p.status); as prox) {
+              <ion-button size="small" [disabled]="ocupado() === p.id" (click)="mudar(p, prox)">
+                Marcar como {{ STATUS_LABEL[prox] }}
+              </ion-button>
+            }
+            @if (podeCancelar(p.status)) {
+              <ion-button size="small" color="danger" fill="outline" [disabled]="ocupado() === p.id"
+                          (click)="confirmarCancelamento(p)">
+                Cancelar
+              </ion-button>
+            }
+            <ion-button size="small" fill="clear" [routerLink]="['/admin/pedidos', p.id, 'comprovante']">
+              Comprovante
+            </ion-button>
+          </div>
+        </ion-card-content>
+      </ion-card>
+    }
+
+    @if (totalPaginas() > 1) {
+      <div class="paginacao">
+        <ion-button fill="clear" [disabled]="paginaAtual() === 0" (click)="buscar(paginaAtual() - 1)">Anterior</ion-button>
+        <span>Página {{ paginaAtual() + 1 }} de {{ totalPaginas() }}</span>
+        <ion-button fill="clear" [disabled]="paginaAtual() + 1 >= totalPaginas()" (click)="buscar(paginaAtual() + 1)">Próxima</ion-button>
+      </div>
+    }
+  </div>
+</ion-content>
