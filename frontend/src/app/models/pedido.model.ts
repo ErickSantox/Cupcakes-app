@@ -67,3 +67,19 @@ export const PROXIMO_STATUS: Partial<Record<StatusPedido, StatusPedido>> = {
 };
 
 export const PODE_CANCELAR: StatusPedido[] = ['AGUARDANDO_PAGAMENTO', 'PAGO', 'EM_PREPARO'];
+
+/** Etapas da timeline do cliente (CANCELADO fica de fora: é um desvio, não uma etapa) */
+export const ETAPAS_PEDIDO: StatusPedido[] = [
+  'AGUARDANDO_PAGAMENTO', 'PAGO', 'EM_PREPARO', 'SAIU_PARA_ENTREGA', 'ENTREGUE',
+];
+
+export const STATUS_FINAIS: StatusPedido[] = ['ENTREGUE', 'CANCELADO'];
+
+export const COR_STATUS: Record<StatusPedido, string> = {
+  AGUARDANDO_PAGAMENTO: 'warning',
+  PAGO: 'primary',
+  EM_PREPARO: 'primary',
+  SAIU_PARA_ENTREGA: 'tertiary',
+  ENTREGUE: 'success',
+  CANCELADO: 'danger',
+};

@@ -22,4 +22,8 @@ export class PedidoService {
     const params = new HttpParams().set('cep', cep).set('subtotal', subtotal);
     return this.http.get<FreteResponse>(`${environment.apiUrl}/frete`, { params });
   }
+
+  meus(): Observable<PedidoResponse[]> {
+    return this.http.get<PedidoResponse[]>(`${this.url}/meus`);
+  }
 }

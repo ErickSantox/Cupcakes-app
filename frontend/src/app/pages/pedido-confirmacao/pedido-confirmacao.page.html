@@ -1,5 +1,8 @@
 <ion-header>
   <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-back-button defaultHref="/tabs/pedidos"></ion-back-button>
+    </ion-buttons>
     <ion-title>Pedido</ion-title>
   </ion-toolbar>
 </ion-header>
@@ -7,12 +10,28 @@
 <ion-content>
   <div class="container">
     @if (pedido(); as p) {
-      <div class="sucesso">
-        <ion-icon name="checkmark-circle-outline" color="success"></ion-icon>
-        <h2>{{ p.status === 'PAGO' ? 'Pagamento confirmado!' : 'Pedido realizado!' }}</h2>
+            <div class="sucesso">
+        @if (cancelado()) {
+          <ion-icon name="close-circle-outline" color="danger"></ion-icon>
+          <h2>Pedido cancelado</h2>
+        } @else {
+          <ion-icon name="checkmark-circle-outline" color="success"></ion-icon>
+          <h2>{{ p.status === 'AGUARDANDO_PAGAMENTO' ? 'Pedido realizado!' : 'Acompanhe seu pedido' }}</h2>
+        }
         <p>Número <strong>{{ p.numero }}</strong></p>
-        <ion-badge [color]="p.status === 'PAGO' ? 'success' : 'warning'">{{ statusLabel[p.status] }}</ion-badge>
+        <ion-badge [color]="corStatus[p.status]">{{ statusLabel[p.status] }}</ion-badge>
       </div>
+
+      @if (!cancelado()) {
+        <ol class="timeline">
+          @for (etapa of etapas; track etapa; let i = $index) {
+            <li [class.feita]="etapaFeita(i)" [class.atual]="i === indiceAtual()">
+              <ion-icon [name]="etapaFeita(i) ? 'checkmark-circle-outline' : 'ellipse-outline'"></ion-icon>
+              <span>{{ rotulo(etapa) }}</span>
+            </li>
+          }
+        </ol>
+      }
 
       <ion-list>
         @for (item of p.itens; track item.produtoId) {

@@ -18,6 +18,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
 import java.time.Year;
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -93,5 +94,12 @@ public class PedidoService {
     public PedidoResponse buscar(String email, Long id) {
         return pedidoRepository.findByIdAndUsuarioEmail(id,email).map(PedidoResponse::de)
             .orElseThrow(() -> new NaoEncontradoException("Pedido não encontrado."));
+    }
+
+    @Transactional(readOnly = true)
+    public List<PedidoResponse> listarMeus(String email) {
+        return pedidoRepository.findByUsuarioEmailOrderByCriadoEmDesc(email).stream()
+            .map(PedidoResponse::de)
+            .toList();
     }
 }
