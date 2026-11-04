@@ -1,13 +1,40 @@
-<ion-header [translucent]="true">
+<ion-header>
   <ion-toolbar>
-    <ion-title>pedidos</ion-title>
+    <ion-title>Meus pedidos</ion-title>
   </ion-toolbar>
 </ion-header>
 
-<ion-content [fullscreen]="true">
-  <ion-header collapse="condense">
-    <ion-toolbar>
-      <ion-title size="large">pedidos</ion-title>
-    </ion-toolbar>
-  </ion-header>
+<ion-content>
+  <ion-refresher slot="fixed" (ionRefresh)="carregar($event)">
+    <ion-refresher-content></ion-refresher-content>
+  </ion-refresher>
+
+  <div class="container">
+    @if (!sessao.logado()) {
+      <div class="vazio">
+        <p>Entre na sua conta para ver seus pedidos.</p>
+        <ion-button routerLink="/login">Entrar</ion-button>
+      </div>
+    } @else if (carregando()) {
+      <div class="vazio"><ion-spinner></ion-spinner></div>
+    } @else if (pedidos().length === 0) {
+      <div class="vazio">
+        <p>Você ainda não fez nenhum pedido.</p>
+        <ion-button routerLink="/tabs/vitrine">Ver cupcakes</ion-button>
+      </div>
+    } @else {
+      <ion-list>
+        @for (p of pedidos(); track p.id) {
+          <ion-item button detail [routerLink]="['/pedido', p.id]">
+            <ion-label>
+              <h2>{{ p.numero }}</h2>
+              <p>{{ p.criadoEm | date: 'dd/MM/yyyy HH:mm' }} · {{ p.itens.length }} item(ns)</p>
+              <p><strong>{{ p.total | currency: 'BRL' }}</strong></p>
+            </ion-label>
+            <ion-badge slot="end" [color]="COR_STATUS[p.status]">{{ STATUS_LABEL[p.status] }}</ion-badge>
+          </ion-item>
+        }
+      </ion-list>
+    }
+  </div>
 </ion-content>

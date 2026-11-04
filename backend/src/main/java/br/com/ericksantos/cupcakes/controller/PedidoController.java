@@ -11,6 +11,7 @@ import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.web.bind.annotation.*;
 
 import java.net.URI;
+import java.util.List;
 
 @RestController
 @RequestMapping("/api/pedidos")
@@ -29,6 +30,11 @@ public class PedidoController {
     @GetMapping("/{id}")
     public PedidoResponse buscar(@AuthenticationPrincipal Jwt jwt,@PathVariable Long id){
         return pedidoService.buscar(jwt.getSubject(),id);
+    }
+
+    @GetMapping("/meus")
+    public List<PedidoResponse> listarMeus(@AuthenticationPrincipal Jwt jwt) {
+        return pedidoService.listarMeus(jwt.getSubject());
     }
 
 }

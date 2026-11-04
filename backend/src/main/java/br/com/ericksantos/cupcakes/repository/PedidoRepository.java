@@ -10,6 +10,7 @@ import org.springframework.data.repository.query.Param;
 
 import org.springframework.data.domain.Pageable;
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Optional;
 
 public interface PedidoRepository extends JpaRepository<Pedido,Long> {
@@ -30,4 +31,6 @@ public interface PedidoRepository extends JpaRepository<Pedido,Long> {
                          @Param("inicio") LocalDateTime inicio,
                          @Param("fim") LocalDateTime fim,
                          Pageable pageable);
+
+    List<Pedido> findByUsuarioEmailOrderByCriadoEmDesc(String email);
 }

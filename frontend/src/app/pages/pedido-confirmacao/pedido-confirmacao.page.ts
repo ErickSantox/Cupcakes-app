@@ -6,15 +6,19 @@ import { ReactiveFormsModule, FormBuilder, Validators, AbstractControl, Validati
 import {
   IonContent, IonHeader, IonTitle, IonToolbar, IonList, IonItem, IonLabel, IonNote,
   IonButton, IonIcon, IonBadge, IonSpinner, IonInput, IonSegment, IonSegmentButton,
+  IonButtons, IonBackButton,
   ToastController,
 } from '@ionic/angular';
 import { addIcons } from 'ionicons';
 import {
   checkmarkCircleOutline, cardOutline, lockClosedOutline, qrCodeOutline, copyOutline, timeOutline,
+  closeCircleOutline, ellipseOutline,
 } from 'ionicons/icons';
 import { PedidoService } from '../../services/pedido.service';
 import { PagamentoService } from '../../services/pagamento.service';
-import { PedidoResponse, STATUS_LABEL } from '../../models/pedido.model';
+import {
+  COR_STATUS, ETAPAS_PEDIDO, PedidoResponse, STATUS_FINAIS, STATUS_LABEL, StatusPedido,
+} from '../../models/pedido.model';
 import { FormaCartao, PagamentoResponse } from '../../models/pagamento.model';
 import { toDataURL } from 'qrcode';
 
@@ -42,6 +46,7 @@ function validadeCartao(control: AbstractControl): ValidationErrors | null {
     CurrencyPipe, RouterLink, ReactiveFormsModule,
     IonContent, IonHeader, IonTitle, IonToolbar, IonList, IonItem, IonLabel, IonNote,
     IonButton, IonIcon, IonBadge, IonSpinner, IonInput, IonSegment, IonSegmentButton,
+    IonButtons, IonBackButton,
   ],
 })
 export class PedidoConfirmacaoPage implements OnInit {
@@ -55,6 +60,21 @@ export class PedidoConfirmacaoPage implements OnInit {
   readonly statusLabel = STATUS_LABEL;
   pedido = signal<PedidoResponse | null>(null);
   erro = signal(false);
+
+  readonly etapas = ETAPAS_PEDIDO;
+  readonly corStatus = COR_STATUS;
+
+  /** Posição do status atual na timeline (-1 se cancelado) */
+  indiceAtual = computed(() => {
+    const status = this.pedido()?.status;
+    return status ? ETAPAS_PEDIDO.indexOf(status) : -1;
+  });
+
+  cancelado = computed(() => this.pedido()?.status === 'CANCELADO');
+
+  // ---------- acompanhamento (US-13) ----------
+  private static readonly POLLING_MS = 10_000;
+  private polling?: ReturnType<typeof setInterval>;
 
   aguardandoPagamento = computed(() => this.pedido()?.status === 'AGUARDANDO_PAGAMENTO');
   modo = signal<'cartao' | 'pix'>('cartao');
@@ -95,17 +115,35 @@ export class PedidoConfirmacaoPage implements OnInit {
   });
 
   constructor() {
-    addIcons({ checkmarkCircleOutline, cardOutline, lockClosedOutline, qrCodeOutline, copyOutline, timeOutline });
-    // Sem isso, o setInterval continuaria rodando depois de sair da tela (vazamento de memória)
-    this.destroyRef.onDestroy(() => this.pararRelogio());
+    addIcons({
+      checkmarkCircleOutline, cardOutline, lockClosedOutline, qrCodeOutline, copyOutline, timeOutline,
+      closeCircleOutline, ellipseOutline,
+    });
+    // Sem isso, os setInterval continuariam rodando depois de sair da tela (vazamento de memória)
+    this.destroyRef.onDestroy(() => {
+      this.pararRelogio();
+      this.pararPolling();
+    });
+  }
+
+  private get id(): number {
+    return Number(this.route.snapshot.paramMap.get('id'));
   }
 
   ngOnInit() {
-    const id = Number(this.route.snapshot.paramMap.get('id'));
-    this.pedidoService.buscar(id).subscribe({
+    this.pedidoService.buscar(this.id).subscribe({
       next: p => this.pedido.set(p),
       error: () => this.erro.set(true),
     });
+  }
+
+  /** Polling só enquanto a tela está visível (CA da US-13) */
+  ionViewWillEnter() {
+    this.iniciarPolling();
+  }
+
+  ionViewWillLeave() {
+    this.pararPolling();
   }
 
   trocarModo(evento: CustomEvent) {
@@ -218,15 +256,59 @@ export class PedidoConfirmacaoPage implements OnInit {
     });
   }
 
+  // ---------- acompanhamento (US-13) ----------
+
+  private iniciarPolling() {
+    this.pararPolling();
+    this.polling = setInterval(() => this.atualizarStatus(), PedidoConfirmacaoPage.POLLING_MS);
+  }
+
+  private pararPolling() {
+    if (this.polling) clearInterval(this.polling);
+    this.polling = undefined;
+  }
+
+  private atualizarStatus() {
+    const atual = this.pedido();
+    if (!atual) return;
+    if (STATUS_FINAIS.includes(atual.status)) {
+      this.pararPolling();   // entregue/cancelado não muda mais
+      return;
+    }
+
+    this.pedidoService.buscar(this.id).subscribe(novo => {
+      if (novo.status === atual.status) return;
+      this.pedido.set(novo);
+      if (novo.status !== 'AGUARDANDO_PAGAMENTO') this.limparPix();
+      this.avisar(
+        `Seu pedido agora está: ${STATUS_LABEL[novo.status]}`,
+        novo.status === 'CANCELADO' ? 'danger' : 'success',
+      );
+    });
+  }
+
+  etapaFeita(i: number): boolean {
+    return i <= this.indiceAtual();
+  }
+
+  rotulo(status: StatusPedido): string {
+    return STATUS_LABEL[status];
+  }
+
   // ---------- comum ----------
 
   private marcarComoPago(mensagem: string) {
     const p = this.pedido();
     if (p) this.pedido.set({ ...p, status: 'PAGO' });
+    this.limparPix();
+    this.avisar(mensagem, 'success');
+  }
+
+  /** Some com o PIX da tela (pago, ou o pedido mudou por fora, ex.: admin cancelou) */
+  private limparPix() {
     this.pix.set(null);
     this.qrCode.set(null);
     this.pararRelogio();
-    this.avisar(mensagem, 'success');
   }
 
   private iniciarRelogio() {
