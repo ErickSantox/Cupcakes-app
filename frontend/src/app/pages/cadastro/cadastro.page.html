@@ -19,7 +19,8 @@
       [errorText]="erroDe('sobrenome', 'Informe o sobrenome (mín. 2 caracteres).')"></ion-input>
 
     <ion-input class="ion-margin-bottom" label="Telefone (DDD + número)" labelPlacement="floating" fill="outline"
-      type="tel" inputmode="numeric" formControlName="telefone"
+      type="tel" inputmode="numeric" formControlName="telefone" maxlength="11"
+      (ionInput)="limitarTelefone($event)"
       [errorText]="erroDe('telefone', 'Somente dígitos, com DDD. Ex.: 11999998888')"></ion-input>
 
     <ion-input class="ion-margin-bottom" label="E-mail" labelPlacement="floating" fill="outline"

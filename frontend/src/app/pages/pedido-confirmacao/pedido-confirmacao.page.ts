@@ -38,6 +38,26 @@ function validadeCartao(control: AbstractControl): ValidationErrors | null {
   return null;
 }
 
+/** B4: 16 dígitos e dígito verificador correto (Luhn, a mesma regra do ValidadorCartao do back) */
+function numeroCartao(control: AbstractControl): ValidationErrors | null {
+  const digitos = String(control.value ?? '').replace(/\D/g, '');
+  if (!digitos) return null;   // o vazio é com o Validators.required
+  if (digitos.length !== 16) return { numeroCartao: true };
+
+  let soma = 0;
+  let dobrar = false;
+  for (let i = digitos.length - 1; i >= 0; i--) {
+    let d = Number(digitos[i]);
+    if (dobrar) {
+      d *= 2;
+      if (d > 9) d -= 9;
+    }
+    soma += d;
+    dobrar = !dobrar;
+  }
+  return soma % 10 === 0 ? null : { numeroCartao: true };
+}
+
 @Component({
   selector: 'app-pedido-confirmacao',
   templateUrl: './pedido-confirmacao.page.html',
@@ -85,7 +105,7 @@ export class PedidoConfirmacaoPage implements OnInit {
 
   form = this.fb.nonNullable.group({
     forma: ['CARTAO_CREDITO' as FormaCartao, Validators.required],
-    numero: ['', [Validators.required, Validators.pattern(/^[\d ]{13,23}$/)]],
+    numero: ['', [Validators.required, numeroCartao]],
     nomeTitular: ['', [Validators.required, Validators.maxLength(60)]],
     validade: ['', [Validators.required, Validators.pattern(/^(0[1-9]|1[0-2])\/\d{2}$/), validadeCartao]],
     cvv: ['', [Validators.required, Validators.pattern(/^\d{3}$/)]],
@@ -154,7 +174,7 @@ export class PedidoConfirmacaoPage implements OnInit {
 
   /** Máscara: "4111111111111111" → "4111 1111 1111 1111" */
   formatarNumero(evento: CustomEvent) {
-    const digitos = String(evento.detail.value ?? '').replace(/\D/g, '').slice(0, 19);
+    const digitos = String(evento.detail.value ?? '').replace(/\D/g, '').slice(0, 16);
     this.form.controls.numero.setValue(digitos.replace(/(\d{4})(?=\d)/g, '$1 '));
   }
 
