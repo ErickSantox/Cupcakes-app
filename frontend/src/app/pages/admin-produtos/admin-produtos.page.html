@@ -58,7 +58,7 @@
                         [counter]="true" maxlength="200" errorText="Informe a descrição."></ion-textarea>
 
           <ion-input label="Preço (R$)" labelPlacement="stacked" type="number" step="0.01" formControlName="preco"
-                     errorText="O preço deve ser maior que zero."></ion-input>
+                     errorText="Informe um preço entre R$ 0,01 e R$ 9.999,99."></ion-input>
 
           <ion-select label="Categoria" labelPlacement="stacked" formControlName="categoriaId" interface="popover">
             @for (c of categorias(); track c.id) {
@@ -76,7 +76,7 @@
           }
 
           <ion-input label="Estoque" labelPlacement="stacked" type="number" formControlName="estoque"
-                     errorText="O estoque não pode ser negativo."></ion-input>
+                     errorText="Informe um estoque entre 0 e 99.999."></ion-input>
 
           <ion-button type="submit" expand="block" [disabled]="salvando()">
             {{ salvando() ? 'Salvando...' : 'Salvar' }}

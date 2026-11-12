@@ -41,10 +41,10 @@ export class AdminProdutosPage implements OnInit {
   form = this.fb.nonNullable.group({
     nome: ['', [Validators.required, Validators.maxLength(100)]],
     descricao: ['', [Validators.required, Validators.maxLength(200)]],
-    preco: [0, [Validators.required, Validators.min(0.01)]],         // RN#1
+    preco: [0, [Validators.required, Validators.min(0.01), Validators.max(9999.99)]],   // RN#1 + B7
     categoriaId: [0, [Validators.required, Validators.min(1)]],
     fotoUrl: ['', [Validators.required, Validators.maxLength(255)]], // RN#2
-    estoque: [0, [Validators.required, Validators.min(0)]],
+    estoque: [0, [Validators.required, Validators.min(0), Validators.max(99999)]],   // B7
   });
 
   constructor() {
