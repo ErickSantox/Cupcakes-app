@@ -155,6 +155,9 @@
         </p>
       </div>
 
+      @if (!aguardandoPagamento()) {
+        <ion-button expand="block" routerLink="/tabs/pedidos">Acompanhar minhas compras</ion-button>
+      }
       <ion-button expand="block" fill="outline" routerLink="/tabs/vitrine">Continuar comprando</ion-button>
     } @else if (erro()) {
       <div class="sucesso"><p>Pedido não encontrado.</p></div>

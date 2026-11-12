@@ -18,6 +18,7 @@
 
     <p>{{ sessao.usuario()?.email }}</p>
     <ion-button expand="block" fill="outline" routerLink="/enderecos">Meus endereços</ion-button>
+    <ion-button expand="block" fill="outline" routerLink="/tabs/pedidos">Minhas compras</ion-button>
 
     @if (sessao.usuario()?.perfil === 'ADMIN') {
       <ion-button expand="block" color="secondary" routerLink="/admin/produtos">Área do administrador</ion-button>
