@@ -1,4 +1,4 @@
-import { Component, OnInit, computed, inject, signal } from '@angular/core';
+import { Component, computed, inject, signal } from '@angular/core';
 import { CurrencyPipe } from '@angular/common';
 import { HttpErrorResponse } from '@angular/common/http';
 import { Router, RouterLink } from '@angular/router';
@@ -24,7 +24,7 @@ import { FreteResponse, PedidoRequest } from '../../models/pedido.model';
     IonItem, IonLabel, IonRadioGroup, IonRadio, IonButton, IonFooter, IonSpinner, IonNote,
   ],
 })
-export class CheckoutPage implements OnInit {
+export class CheckoutPage {
   carrinho = inject(CarrinhoService);
   private enderecoService = inject(EnderecoService);
   private pedidoService = inject(PedidoService);
@@ -42,17 +42,27 @@ export class CheckoutPage implements OnInit {
 
   private requisicaoFrete?: Subscription;
 
-  ngOnInit() {
+  /**
+   * B1: recarrega toda vez que a tela aparece. O checkout fica vivo na pilha do Ionic
+   * enquanto o usuário cadastra um endereço, então o ngOnInit não rodaria de novo.
+   */
+  ionViewWillEnter() {
     if (this.carrinho.itens().length === 0) {
       this.router.navigateByUrl('/tabs/carrinho', { replaceUrl: true });
       return;
     }
+    this.carregarEnderecos();
+  }
 
+  private carregarEnderecos() {
     this.enderecoService.listar().subscribe({
       next: lista => {
         this.enderecos.set(lista);
-        const inicial = lista.find(e => e.padrao) ?? lista[0];
+        // Mantém a escolha do usuário se ela ainda existir; senão, o padrão; senão, o primeiro
+        const atual = lista.find(e => e.id === this.enderecoId());
+        const inicial = atual ?? lista.find(e => e.padrao) ?? lista[0];
         if (inicial) this.selecionar(inicial.id);
+        else this.enderecoId.set(null);
         this.carregando.set(false);
       },
       error: () => {
