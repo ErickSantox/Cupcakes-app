@@ -35,6 +35,13 @@ export class CadastroPage {
 
   enviando = signal(false);
 
+    /** B5: aceita só dígitos e no máximo 11 (DDD + celular). Também limpa o que vier colado, como "(11) 99999-8888" */
+  limitarTelefone(evento: CustomEvent) {
+    const digitos = String(evento.detail.value ?? '').replace(/\D/g, '').slice(0, 11);
+    (evento.target as HTMLIonInputElement).value = digitos;   // atualiza a tela na hora
+    this.form.controls.telefone.setValue(digitos);
+  }
+
   cadastrar() {
     if (this.form.invalid) {
       this.form.markAllAsTouched();

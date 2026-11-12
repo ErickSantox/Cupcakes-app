@@ -67,9 +67,9 @@
               </ion-segment>
 
               <ion-input formControlName="numero" label="Número do cartão" labelPlacement="floating" fill="outline"
-                         inputmode="numeric" autocomplete="cc-number" maxlength="23"
+                         inputmode="numeric" autocomplete="cc-number" maxlength="19"
                          (ionInput)="formatarNumero($event)"
-                         errorText="Informe um número de cartão válido."></ion-input>
+                         errorText="Número de cartão inválido."></ion-input>
 
               <ion-input formControlName="nomeTitular" label="Nome impresso no cartão" labelPlacement="floating"
                          fill="outline" autocomplete="cc-name"
