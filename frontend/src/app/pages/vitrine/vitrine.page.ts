@@ -1,10 +1,11 @@
 import { Component, OnInit, inject, signal } from '@angular/core';
 import { CurrencyPipe } from '@angular/common';
-import { RouterLink } from '@angular/router';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { NavigationEnd, Router, RouterLink } from '@angular/router';
 import { IonContent, IonHeader, IonTitle, IonToolbar, IonChip, IonLabel, IonGrid, IonRow, IonCol, IonCard, IonCardContent, IonImg, IonBadge, IonSkeletonText, IonRefresher, IonRefresherContent, IonSearchbar } from '@ionic/angular';
 import { ProdutoService } from '../../services/produto.service';
 import { CategoriaResponse, ProdutoResponse } from '../../models/produto.model';
-import { Subscription } from 'rxjs';
+import { Subscription, filter } from 'rxjs';
 import { urlDaFoto } from '../../utils/foto';
 
 @Component({
@@ -31,6 +32,18 @@ export class VitrinePage implements OnInit {
   /** 4 cards "fantasma" para o skeleton enquanto carrega */
   readonly esqueletos = [1, 2, 3, 4];
 
+    private router = inject(Router);
+
+  constructor() {
+    // B2: a aba Vitrine nunca é destruída. Recarrega o estoque sempre que ela volta a aparecer
+    // (após uma compra, pela tab bar, pela setinha ou pelo voltar do navegador).
+    this.router.events.pipe(
+      filter((e): e is NavigationEnd => e instanceof NavigationEnd),
+      filter(e => e.urlAfterRedirects.startsWith('/tabs/vitrine')),
+      takeUntilDestroyed(),
+    ).subscribe(() => this.carregarProdutos(undefined, true));
+  }
+
 
 
   selecionarCategoria(id: number | null) {
@@ -38,8 +51,9 @@ export class VitrinePage implements OnInit {
     this.carregarProdutos();
   }
 
-  carregarProdutos(evento?: CustomEvent) {
-    this.carregando.set(true);
+  /** silencioso = recarga em segundo plano: mantém os cards na tela em vez de piscar o skeleton */
+  carregarProdutos(evento?: CustomEvent, silencioso = false) {
+    if (!silencioso) this.carregando.set(true);
     this.requisicao?.unsubscribe();
     this.requisicao = this.produtoService.listar(this.categoriaSelecionada(), this.busca()).subscribe({
       next: p => this.produtos.set(p),
