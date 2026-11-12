@@ -2,7 +2,7 @@ import { Component, OnInit, computed, inject, input, signal } from '@angular/cor
 import { CurrencyPipe } from '@angular/common';
 import {
   IonContent, IonHeader, IonTitle, IonToolbar, IonButtons, IonBackButton, IonImg, IonBadge, IonSpinner,
-  IonFooter, IonButton, IonIcon, ToastController,
+  IonFooter, IonButton, IonIcon, NavController, ToastController,
 } from '@ionic/angular';
 import { ProdutoService } from '../../services/produto.service';
 import { ProdutoResponse } from '../../models/produto.model';
@@ -35,6 +35,7 @@ export class ProdutoDetalhePage implements OnInit {
   private carrinho = inject(CarrinhoService);
   private toast = inject(ToastController);
   private router = inject(Router);
+  private navCtrl = inject(NavController);
 
   quantidade = signal(1);
 
@@ -69,6 +70,9 @@ export class ProdutoDetalhePage implements OnInit {
     });
     await t.present();
     this.quantidade.set(1);
+
+    // M2: volta para a vitrine para o cliente continuar escolhendo (o toast segue visível)
+    this.navCtrl.navigateBack('/tabs/vitrine');
   }
 
     fotoDe(p: ProdutoResponse): string {
