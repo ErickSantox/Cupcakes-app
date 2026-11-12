@@ -60,7 +60,7 @@ export class ProdutoDetalhePage implements OnInit {
 
     const t = await this.toast.create({
       message: limitou
-        ? `Limite de ${MAX_POR_ITEM} unidades por sabor. Seu carrinho ficou com o máximo.`
+        ? `Só é possível ter ${this.carrinho.limiteDe(p)} unidades de ${p.nome}. Seu carrinho ficou com o máximo.`
         : `${this.quantidade()}x ${p.nome} no carrinho! 🧁`,
       color: limitou ? 'warning' : 'success',
       duration: 2500,

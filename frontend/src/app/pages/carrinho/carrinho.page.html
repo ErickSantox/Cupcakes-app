@@ -26,6 +26,9 @@
               <h3>{{ item.nome }}</h3>
               <p>{{ item.preco | currency: 'BRL' }} cada</p>
               <p class="subtotal">{{ item.preco * item.quantidade | currency: 'BRL' }}</p>
+               @if (item.estoque !== undefined && item.estoque < maximo && item.quantidade >= item.estoque) {
+                <p class="limite">Só temos {{ item.estoque }} em estoque</p>
+              }
             </ion-label>
 
             <div class="seletor" slot="end">
@@ -34,7 +37,7 @@
                 <ion-icon slot="icon-only" name="remove"></ion-icon>
               </ion-button>
               <span class="qtd">{{ item.quantidade }}</span>
-              <ion-button fill="clear" size="small" [disabled]="item.quantidade >= maximo"
+              <ion-button fill="clear" size="small" [disabled]="item.quantidade >= carrinho.limiteDe(item)"
                           (click)="mudarQuantidade(item, 1)" aria-label="Aumentar">
                 <ion-icon slot="icon-only" name="add"></ion-icon>
               </ion-button>

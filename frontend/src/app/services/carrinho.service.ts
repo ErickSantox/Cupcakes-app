@@ -24,21 +24,31 @@ export class CarrinhoService {
     });
   }
 
+  /** B3: teto de um item = o menor entre o estoque conhecido e o limite de 50 (RN#1) */
+  limiteDe(item: { estoque?: number }): number {
+    return Math.min(item.estoque ?? MAX_POR_ITEM, MAX_POR_ITEM);
+  }
+
+  /** Retorna true se precisou limitar a quantidade (pelo estoque ou pelos 50) */
   adicionar(produto: ProdutoResponse, quantidade = 1): boolean {
+    const limite = this.limiteDe(produto);
+    if (limite <= 0) return true;   // esgotado: não adiciona nada
+
     const existente = this._itens().find(i => i.produtoId === produto.id);
     const desejada = (existente?.quantidade ?? 0) + quantidade;
-    const final = Math.min(desejada, MAX_POR_ITEM);
+    const final = Math.min(desejada, limite);
 
     if (existente) {
+      // Atualiza também o estoque, que pode ter mudado desde a última vez
       this._itens.update(lista =>
-        lista.map(i => i.produtoId === produto.id ? { ...i, quantidade: final } : i));
+        lista.map(i => i.produtoId === produto.id ? { ...i, quantidade: final, estoque: produto.estoque } : i));
     } else {
       this._itens.update(lista => [...lista, {
         produtoId: produto.id, nome: produto.nome, preco: produto.preco,
-        fotoUrl: produto.fotoUrl, quantidade: final,
+        fotoUrl: produto.fotoUrl, quantidade: final, estoque: produto.estoque,
       }]);
     }
-    return desejada > MAX_POR_ITEM;
+    return desejada > limite;
   }
 
   alterarQuantidade(produtoId: number, quantidade: number) {
@@ -46,9 +56,8 @@ export class CarrinhoService {
       this.remover(produtoId);
       return;
     }
-    const final = Math.min(quantidade, MAX_POR_ITEM);
     this._itens.update(lista =>
-      lista.map(i => i.produtoId === produtoId ? { ...i, quantidade: final } : i));
+      lista.map(i => i.produtoId === produtoId ? { ...i, quantidade: Math.min(quantidade, this.limiteDe(i)) } : i));
   }
 
   /** Retorna o item removido, para o "Desfazer" (US-07) */
