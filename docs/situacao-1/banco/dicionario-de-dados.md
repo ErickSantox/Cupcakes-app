@@ -76,7 +76,7 @@ Compra finalizada pelo cliente (US-08, US-13, US-15).
 | subtotal | DECIMAL(10,2) | Sim | | Soma de quantidade × preco_unitario dos itens | Valor dos produtos |
 | frete | DECIMAL(10,2) | Sim | | >= 0; 0 quando subtotal >= R$ 80,00 (US-12 RN#1) | Valor do frete |
 | total | DECIMAL(10,2) | Sim | | subtotal + frete | Valor cobrado |
-| status | VARCHAR(50) | Sim | | AGUARDANDO_PAGAMENTO, PAGO, EM_PREPARO, SAIU_PARA_ENTREGA, ENTREGUE, CANCELADO; só o ADMIN altera após o pagamento (US-15 RN#1) | Situação do pedido |
+| status | VARCHAR(50) | Sim | | AGUARDANDO_PAGAMENTO, PAGO, EM_PREPARO, SAIU_PARA_ENTREGA, ENTREGUE, CANCELADO. Só o pagamento (US-09/10) leva a PAGO; depois, só o ADMIN altera, seguindo as transições permitidas: PAGO → EM_PREPARO → SAIU_PARA_ENTREGA → ENTREGUE, e CANCELADO a partir de AGUARDANDO_PAGAMENTO, PAGO ou EM_PREPARO (US-15 RN#1). ENTREGUE e CANCELADO são finais; cancelar devolve o estoque e estorna o pagamento | Situação do pedido |
 | entrega_logradouro | VARCHAR(100) | Sim | | Cópia do endereço no momento da compra | Rua da entrega |
 | entrega_numero | VARCHAR(10) | Sim | | Cópia | Número da entrega |
 | entrega_cep | CHAR(8) | Sim | | Cópia; base do cálculo do frete (US-12 CA#1) | CEP da entrega |
@@ -107,7 +107,7 @@ Pagamento de um pedido (1:1) — cartão ou PIX simulados (US-09, US-10).
 | id | BIGSERIAL | Sim | PK | Gerado automaticamente | Identificador do pagamento |
 | pedido_id | BIGINT | Sim | FK → pedido.id, UNIQUE | Um pagamento por pedido | Pedido pago |
 | forma | VARCHAR(50) | Sim | | CARTAO_CREDITO, CARTAO_DEBITO ou PIX | Forma de pagamento |
-| status | VARCHAR(50) | Sim | | PENDENTE, APROVADO, RECUSADO ou EXPIRADO | Situação do pagamento |
+| status | VARCHAR(50) | Sim | | PENDENTE, APROVADO, RECUSADO, EXPIRADO ou ESTORNADO (estorno simulado quando o admin cancela um pedido pago, US-15; migration V4) | Situação do pagamento |
 | valor | DECIMAL(10,2) | Sim | | Igual ao pedido.total | Valor cobrado |
 | bandeira | VARCHAR(50) | Não | | Só se forma = CARTAO_*; VISA, MASTERCARD ou ELO (US-09 RN#1) | Bandeira do cartão |
 | ultimos_digitos | CHAR(4) | Não | | Só se forma = CARTAO_*; número completo e CVV nunca são gravados (US-09 CA#3) | Exibido como **** 1234 |

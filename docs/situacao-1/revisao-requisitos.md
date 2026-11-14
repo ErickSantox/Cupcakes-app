@@ -27,8 +27,24 @@ ambiguidades, conflitos e itens inviáveis no escopo acadêmico.
 
 ## 4. Lacunas identificadas
 - US-14 cobre só o cadastro: incluídas edição e desativação de produto (desativar em vez de excluir, para preservar o histórico de pedidos).
-- Não havia história para criar o administrador: ele é criado pela carga inicial do banco (migration).
+- Não havia história para criar o administrador: ele é criado na inicialização da aplicação (`AdminSeeder`), a partir das variáveis de ambiente `ADMIN_EMAIL` e `ADMIN_SENHA`, para que nenhuma senha fique gravada no repositório.
 
 ## 5. Correções na documentação do PIT I
 - A tabela de tempo estava com os valores deslocados uma linha.
 - A tabela do backlog (Apêndice B) estava com as linhas desalinhadas.
+
+## 6. Atualizações durante o desenvolvimento (PIT II)
+Decisões tomadas ao implementar as histórias, que complementam esta revisão.
+
+| História | Atualização | Motivo |
+|---|---|---|
+| US-15 | O admin não pode marcar um pedido como PAGO; esse status só vem do pagamento (US-09/10). As transições seguem uma máquina de estados (`StatusPedido.podeIrPara`), e transições inválidas retornam 422 | Evitar que um pedido não pago seja preparado ou entregue |
+| US-15 | Cancelar um pedido devolve o estoque e estorna o pagamento de forma simulada (novo status de pagamento ESTORNADO, migration V4). Pedido que já saiu para entrega não pode ser cancelado | Manter estoque e pagamento coerentes com o pedido |
+| US-15 CA#3 | Comprovante impresso a partir de uma página própria, isolada do layout do app | O layout do Ionic não imprime corretamente |
+| US-13 | O status é atualizado a cada 10 s apenas enquanto a tela do pedido está aberta, com aviso na tela quando muda | Alternativa ao push (ver item 3), sem gastar requisições em segundo plano |
+| US-06 | O carrinho guarda o estoque de cada produto e limita a quantidade a ele, além do limite de 50 | Achado nos testes com usuários (Situação 3) |
+| US-09 | O número do cartão também é validado no front (Luhn, 16 dígitos) | Achado nos testes com usuários (Situação 3) |
+| US-13 | A aba "Pedidos" passou a se chamar "Minhas compras", com atalhos na Conta e após o pagamento | Um testador não encontrou a área (Situação 3) |
+| — | Tema escuro (dark mode) registrado para uma versão futura | Sugestão de testador fora do escopo desta entrega |
+
+O relatório completo dos testes e das correções está na [Situação 3](../situacao-3/README.md).
