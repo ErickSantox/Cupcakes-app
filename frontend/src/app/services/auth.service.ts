@@ -20,6 +20,15 @@ export class AuthService {
     return this.http.post<LoginResponse>(`${environment.apiUrl}/auth/login`, dados).pipe(tap(resposta => this.sessao.salvar(resposta)));
   }
 
+  /** US-02 CA#3: o back sempre responde 204, exista ou não o e-mail */
+  esqueciSenha(email: string): Observable<void> {
+    return this.http.post<void>(`${environment.apiUrl}/auth/esqueci-senha`, { email });
+  }
+
+  redefinirSenha(token: string, novaSenha: string): Observable<void> {
+    return this.http.post<void>(`${environment.apiUrl}/auth/redefinir-senha`, { token, novaSenha });
+  }
+
   logout(): void {
     this.sessao.limpar();
   }

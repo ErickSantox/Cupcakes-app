@@ -13,6 +13,7 @@ import br.com.ericksantos.cupcakes.repository.PedidoRepository;
 import br.com.ericksantos.cupcakes.repository.ProdutoRepository;
 import br.com.ericksantos.cupcakes.repository.UsuarioRepository;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -23,6 +24,7 @@ import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class PedidoService {
 
     private final PedidoRepository pedidoRepository;
@@ -87,7 +89,10 @@ public class PedidoService {
         pedido.setEntregaCep(endereco.getCep());
 
         pedido.setNumero("CPK-%d-%06d".formatted(Year.now().getValue(), pedidoRepository.proximoNumero()));
-        return PedidoResponse.de(pedidoRepository.save(pedido));
+        Pedido salvo = pedidoRepository.save(pedido);
+        // US-08: sem servidor SMTP no escopo, o e-mail de confirmação é simulado em log
+        log.info("[E-MAIL SIMULADO] Pedido {} confirmado para {}", salvo.getNumero(), email);
+        return PedidoResponse.de(salvo);
     }
 
     @Transactional(readOnly = true)

@@ -16,6 +16,14 @@ export const routes: Routes = [
     loadComponent: () => import('./pages/login/login.page').then( m => m.LoginPage)
   },
   {
+    path: 'esqueci-senha',
+    loadComponent: () => import('./pages/esqueci-senha/esqueci-senha.page').then(m => m.EsqueciSenhaPage),
+  },
+  {
+    path: 'redefinir-senha',
+    loadComponent: () => import('./pages/redefinir-senha/redefinir-senha.page').then(m => m.RedefinirSenhaPage),
+  },
+  {
     path: 'produto/:id',
     loadComponent: () => import('./pages/produto-detalhe/produto-detalhe.page').then( m => m.ProdutoDetalhePage)
   },
